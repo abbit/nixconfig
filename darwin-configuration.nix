@@ -29,6 +29,7 @@
     enable = true;
     global.autoUpdate = false;
     casks = [
+      "arc"
       "bitwarden"
       "blackhole-16ch"
       "iina"
