@@ -24,12 +24,9 @@
   } @ inputs: let
     hostname = "Abbits-MacBook-Air";
     username = "abbit";
+    homedir = "/Users/${username}";
     system = "aarch64-darwin";
-    pkgs = import nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
-      overlays = [self.overlays.mypkgs];
-    };
+    specialArgs = {inherit inputs username homedir;};
   in {
     overlays.mypkgs = final: prev: {
       gh-poi = final.callPackage ./packages/gh-poi.nix {};
@@ -37,17 +34,24 @@
     };
 
     darwinConfigurations.${hostname} = nix-darwin.lib.darwinSystem {
-      inherit system pkgs;
+      inherit system;
+
       modules = [
+        ({pkgs, ...}: {
+          nixpkgs.overlays = [
+            self.overlays.mypkgs
+          ];
+        })
         ./darwin-configuration.nix
         home-manager.darwinModules.home-manager
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.users.${username} = import ./home-manager.nix;
+          home-manager.extraSpecialArgs = specialArgs;
         }
       ];
-      specialArgs = {inherit inputs username;};
+      specialArgs = specialArgs;
     };
 
     # Expose the package set, including overlays, for convenience.

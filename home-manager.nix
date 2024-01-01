@@ -2,6 +2,8 @@
   lib,
   pkgs,
   osConfig,
+  username,
+  homedir,
   ...
 }: let
   shellAliases = {
@@ -25,8 +27,8 @@ in {
   # changes in each release.
   home.stateVersion = "23.11";
 
-  home.username = "abbit";
-  home.homeDirectory = "/Users/abbit";
+  home.username = username;
+  home.homeDirectory = homedir;
 
   home.packages = with pkgs; [
     scc

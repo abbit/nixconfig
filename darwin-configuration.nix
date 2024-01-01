@@ -1,10 +1,9 @@
 {
   pkgs,
   username,
+  homedir,
   ...
-}: let
-  HOME = "/Users/${username}";
-in {
+}: {
   environment.systemPackages = with pkgs; [
     # tools
     fd
@@ -36,9 +35,7 @@ in {
   };
 
   fonts.fontDir.enable = true;
-  fonts.fonts = with pkgs; [
-    (nerdfonts.override {fonts = ["JetBrainsMono"];})
-  ];
+  fonts.fonts = [(pkgs.nerdfonts.override {fonts = ["JetBrainsMono"];})];
 
   system = {
     defaults = {
@@ -66,10 +63,10 @@ in {
   launchd.user.agents."gdrive-sync" = {
     script = ''
       echo "[$(date "+%Y-%m-%d %H:%M:%S")] Running sync job..."
-      ${pkgs.rclone}/bin/rclone sync --exclude ".DS_Store" ${HOME}/Documents/Books gdrive:/Books
-      ${pkgs.rclone}/bin/rclone sync --exclude ".DS_Store" ${HOME}/Documents/Docs gdrive:/Docs
-      ${pkgs.rclone}/bin/rclone sync --exclude ".DS_Store" ${HOME}/Documents/Misc gdrive:/Misc
-      ${pkgs.rclone}/bin/rclone sync --exclude ".DS_Store" ${HOME}/Pictures/pics gdrive:/pics
+      ${pkgs.rclone}/bin/rclone sync --exclude ".DS_Store" ${homedir}/Documents/Books gdrive:/Books
+      ${pkgs.rclone}/bin/rclone sync --exclude ".DS_Store" ${homedir}/Documents/Docs gdrive:/Docs
+      ${pkgs.rclone}/bin/rclone sync --exclude ".DS_Store" ${homedir}/Documents/Misc gdrive:/Misc
+      ${pkgs.rclone}/bin/rclone sync --exclude ".DS_Store" ${homedir}/Pictures/pics gdrive:/pics
       echo "[$(date "+%Y-%m-%d %H:%M:%S")] All things synced!"
     '';
     serviceConfig = {
@@ -82,10 +79,7 @@ in {
 
   # The user should already exist, but we need to set this up so Nix knows
   # what our home directory is (https://github.com/LnL7/nix-darwin/issues/423).
-  users.users.${username} = {
-    home = HOME;
-    shell = pkgs.fish;
-  };
+  users.users.${username}.home = homedir;
 
   # We install Nix using a separate installer by Determinate Systems
   # so we don't want nix-darwin to manage it for us.
