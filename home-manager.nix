@@ -140,7 +140,9 @@ in {
       dquote = str: "\"" + str + "\"";
       makeBinPathList = map (path: path + "/bin");
     in ''
-      eval (/opt/homebrew/bin/brew shellenv)
+      if not set -q HOMEBREW_PREFIX
+        eval (/opt/homebrew/bin/brew shellenv)
+      end
 
       set -U fish_greeting # disable fish greeting
       set -U fish_key_bindings fish_vi_key_bindings # use vi-mode
@@ -149,8 +151,8 @@ in {
         source "$GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish"
       end
 
-      # hack to fix $PATH entries order
-      # https://github.com/LnL7/nix-darwin/issues/122#issuecomment-1659465635
+      # workaround to fix $PATH entries order
+      # see https://github.com/LnL7/nix-darwin/issues/122#issuecomment-1659465635
       fish_add_path --move --prepend --path ${lib.concatMapStringsSep " " dquote (makeBinPathList osConfig.environment.profiles)}
       set fish_user_paths $fish_user_paths
     '';
@@ -177,6 +179,39 @@ in {
     ];
   };
 
+  programs.zsh = {
+    enable = true;
+    shellAliases = shellAliases;
+
+    initExtra = ''
+      if [[ -z $HOMEBREW_PREFIX ]]; then
+       eval "$(/opt/homebrew/bin/brew shellenv)"
+      fi
+
+      # Ghostty shell integration
+      if [[ -n $GHOSTTY_RESOURCES_DIR ]]; then
+          autoload -Uz -- "$GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration
+          ghostty-integration
+          unfunction ghostty-integration
+      fi
+
+      # >>> conda initialize >>>
+      # !! Contents within this block are managed by 'conda init' !!
+      __conda_setup="$('/opt/homebrew/Caskroom/miniforge/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
+      if [ $? -eq 0 ]; then
+          eval "$__conda_setup"
+      else
+          if [ -f "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh" ]; then
+              . "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh"
+          else
+              export PATH="/opt/homebrew/Caskroom/miniforge/base/bin:$PATH"
+          fi
+      fi
+      unset __conda_setup
+      # <<< conda initialize <<<
+    '';
+  };
+
   programs.neovim = {
     enable = true;
     defaultEditor = true;
@@ -196,6 +231,8 @@ in {
 
   programs.starship = {
     enable = true;
+    enableBashIntegration = false;
+    enableZshIntegration = false;
     settings = {
       status.disabled = false;
     };
