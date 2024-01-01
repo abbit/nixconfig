@@ -10,6 +10,7 @@
     ls = "eza";
     ll = "eza -lah --group-directories-first";
     tree = "eza --tree";
+    ipy = "python3 -m IPython";
   };
   terminal = {
     font.family = "JetBrainsMonoNL Nerd Font";

@@ -14,6 +14,13 @@
     # programming languages
     nodejs_20
     go
+    (python3.withPackages (
+      p:
+        with p; [
+          ipython
+          requests
+        ]
+    ))
   ];
 
   environment.shells = with pkgs; [
