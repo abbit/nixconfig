@@ -29,8 +29,18 @@
     enable = true;
     global.autoUpdate = false;
     casks = [
-      "sioyek"
-      # TODO: migrate brew casks here
+      "bitwarden"
+      "blackhole-16ch"
+      "iina"
+      "orbstack"
+      "raycast"
+      "rectangle"
+      "rescuetime"
+      #"sioyek"
+      "skim"
+      "spotify"
+      "stats"
+      "transmission"
     ];
   };
 
