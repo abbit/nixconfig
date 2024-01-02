@@ -32,6 +32,18 @@
   programs.zsh.enable = true;
   programs.fish.enable = true;
 
+  # The user should already exist, but we need to set this up so Nix knows
+  # what our home directory is (https://github.com/LnL7/nix-darwin/issues/423).
+  users.users.${username}.home = homedir;
+
+  nix.extraOptions = ''
+    experimental-features = nix-command flakes
+  '';
+
+  # ====================================
+  #         Darwin specific
+  # ====================================
+
   homebrew = {
     enable = true;
     global.autoUpdate = false;
@@ -94,10 +106,6 @@
       StandardErrorPath = "/tmp/gdrive-sync-logs.txt";
     };
   };
-
-  # The user should already exist, but we need to set this up so Nix knows
-  # what our home directory is (https://github.com/LnL7/nix-darwin/issues/423).
-  users.users.${username}.home = homedir;
 
   # We install Nix using a separate installer by Determinate Systems
   # so we don't want nix-darwin to manage it for us.

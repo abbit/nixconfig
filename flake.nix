@@ -22,7 +22,6 @@
     home-manager,
     ...
   } @ inputs: let
-    hostname = "Abbits-MacBook-Air";
     username = "abbit";
     homedir = "/Users/${username}";
     system = "aarch64-darwin";
@@ -33,15 +32,10 @@
       catppuccin-alacritty = final.callPackage ./packages/catppuccin-alacritty.nix {};
     };
 
-    darwinConfigurations.${hostname} = nix-darwin.lib.darwinSystem {
+    darwinConfigurations."Abbits-MacBook-Air" = nix-darwin.lib.darwinSystem {
       inherit system;
-
       modules = [
-        ({pkgs, ...}: {
-          nixpkgs.overlays = [
-            self.overlays.mypkgs
-          ];
-        })
+        ({pkgs, ...}: {nixpkgs.overlays = [self.overlays.mypkgs];})
         ./darwin-configuration.nix
         home-manager.darwinModules.home-manager
         {
@@ -53,9 +47,6 @@
       ];
       specialArgs = specialArgs;
     };
-
-    # Expose the package set, including overlays, for convenience.
-    darwinPackages = self.darwinConfigurations.${hostname}.pkgs;
 
     formatter.${system} = nixpkgs.legacyPackages.${system}.alejandra;
   };
