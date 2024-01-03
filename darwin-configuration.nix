@@ -1,48 +1,38 @@
 {
+  config,
   pkgs,
   username,
   homedir,
   ...
 }: {
-  environment.systemPackages = with pkgs; [
-    # tools
-    fd
-    ripgrep
-    rclone
-    jq
-    nushell
-    # programming languages
-    nodejs_20
-    go
-    (python3.withPackages (
-      p:
-        with p; [
-          ipython
-          requests
-        ]
-    ))
-  ];
-
-  environment.shells = with pkgs; [
-    bashInteractive
-    zsh
-    fish
-  ];
-
   programs.zsh.enable = true;
-  programs.fish.enable = true;
 
-  # The user should already exist, but we need to set this up so Nix knows
-  # what our home directory is (https://github.com/LnL7/nix-darwin/issues/423).
-  users.users.${username}.home = homedir;
-
-  nix.extraOptions = ''
-    experimental-features = nix-command flakes
+  # Needed to address bug where $PATH is not properly set for fish:
+  # https://github.com/LnL7/nix-darwin/issues/122
+  programs.fish.shellInit = ''
+    for p in (string split : ${config.environment.systemPath})
+      if not contains $p $fish_user_paths
+        set -g fish_user_paths $fish_user_paths $p
+      end
+    end
   '';
 
-  # ====================================
-  #         Darwin specific
-  # ====================================
+  environment.extraInit = ''
+    eval "$(${config.homebrew.brewPrefix}/brew shellenv)"
+  '';
+
+  # https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish
+  # For some reason if the Fish completions are added at the end of `fish_complete_path` they don't
+  # seem to work, but they do work if added at the start.
+  programs.fish.interactiveShellInit = ''
+    if test -d (brew --prefix)"/share/fish/completions"
+      set -p fish_complete_path (brew --prefix)/share/fish/completions
+    end
+
+    if test -d (brew --prefix)"/share/fish/vendor_completions.d"
+      set -p fish_complete_path (brew --prefix)/share/fish/vendor_completions.d
+    end
+  '';
 
   homebrew = {
     enable = true;
@@ -111,9 +101,6 @@
   # so we don't want nix-darwin to manage it for us.
   # This tells nix-darwin to just use whatever is running.
   nix.useDaemon = true;
-
-  # Necessary for using flakes on this system.
-  nix.settings.experimental-features = "nix-command flakes";
 
   # The platform the configuration will be used on.
   nixpkgs.hostPlatform = "aarch64-darwin";
