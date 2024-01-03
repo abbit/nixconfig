@@ -23,14 +23,13 @@
     ...
   } @ inputs: let
     username = "abbit";
-    homedir = "/Users/${username}";
 
-    specialArgs = {inherit inputs username homedir;};
+    specialArgs = {inherit inputs username;};
 
     hmConfig = {
       home-manager.useGlobalPkgs = true;
       home-manager.useUserPackages = true;
-      home-manager.users.${username} = import ./home-manager.nix;
+      home-manager.users.${username} = import ./home.nix;
       home-manager.extraSpecialArgs = specialArgs;
     };
   in {

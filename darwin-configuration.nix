@@ -2,9 +2,16 @@
   config,
   pkgs,
   username,
-  homedir,
   ...
-}: {
+}: let
+  homedir =
+    (
+      if pkgs.stdenv.isDarwin
+      then "/Users/"
+      else "/home/"
+    )
+    + username;
+in {
   programs.zsh.enable = true;
 
   # Needed to address bug where $PATH is not properly set for fish:

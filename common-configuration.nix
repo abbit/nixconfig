@@ -1,9 +1,16 @@
 {
   pkgs,
   username,
-  homedir,
   ...
-}: {
+}: let
+  homedir =
+    (
+      if pkgs.stdenv.isDarwin
+      then "/Users/"
+      else "/home/"
+    )
+    + username;
+in {
   environment.systemPackages = with pkgs; [
     # tools
     vim

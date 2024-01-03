@@ -2,10 +2,17 @@
   lib,
   pkgs,
   username,
-  homedir,
   ...
 }: let
   isDarwin = pkgs.stdenv.isDarwin;
+
+  homedir =
+    (
+      if isDarwin
+      then "/Users/"
+      else "/home/"
+    )
+    + username;
 
   shellAliases = {
     ls = "eza";
@@ -163,7 +170,6 @@ in
 
       # TODO: migrate from mason?
     };
-    xdg.configFile.nvim.source = ./configs/nvim;
 
     programs.direnv = {
       enable = true;
@@ -176,6 +182,7 @@ in
       enableZshIntegration = false;
       settings = {
         status.disabled = false;
+        container.disabled = true;
       };
     };
 
@@ -184,9 +191,9 @@ in
       options = ["--cmd c"];
     };
 
-    # =================================
-    #         Macbook specific
-    # =================================
+    # ==========================================
+    #         Macbook-specific
+    # ==========================================
 
     programs.zsh = mkIf isDarwin {
       enable = true;
@@ -237,15 +244,21 @@ in
       };
     };
 
-    xdg.configFile."ghostty/config".text = mkIf isDarwin ''
-      theme = catppuccin-mocha
+    xdg.configFile =
+      {
+        nvim.source = ./configs/nvim;
+      }
+      // optionalAttrs isDarwin {
+        "ghostty/config".text = ''
+          theme = catppuccin-mocha
 
-      font-size = ${builtins.toString terminal.font.size}
-      font-family = ${terminal.font.family}
+          font-size = ${builtins.toString terminal.font.size}
+          font-family = ${terminal.font.family}
 
-      macos-option-as-alt = true
-      mouse-hide-while-typing = true
-      quit-after-last-window-closed = true
-      command = ${terminal.shell.command}
-    '';
+          macos-option-as-alt = true
+          mouse-hide-while-typing = true
+          quit-after-last-window-closed = true
+          command = ${terminal.shell.command}
+        '';
+      };
   }
