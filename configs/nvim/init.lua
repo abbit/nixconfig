@@ -744,6 +744,19 @@ require("mason-lspconfig").setup({
       local lua_opts = lsp_zero.nvim_lua_ls()
       lspconfig.lua_ls.setup(lua_opts)
     end,
+    rust_analyzer = function()
+      lspconfig.rust_analyzer.setup({
+        settings = {
+          ["rust-analyzer"] = {
+            checkOnSave = { command = "clippy" },
+            files = {
+              excludeDirs = { ".direnv", ".git", "target" },
+              watcherExclude = { ".direnv", ".git", "target" },
+            },
+          },
+        },
+      })
+    end,
   },
 })
 
