@@ -98,8 +98,6 @@ in
         ".DS_Store"
         ".vscode"
         ".idea"
-        ".envrc"
-        ".direnv/"
       ];
       extraConfig = {
         color.ui = true;
