@@ -13,6 +13,11 @@
       url = "github:nix-community/home-manager/release-23.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -20,6 +25,7 @@
     nixpkgs,
     nix-darwin,
     home-manager,
+    rust-overlay,
     ...
   } @ inputs: let
     username = "abbit";
@@ -32,6 +38,17 @@
       home-manager.users.${username} = import ./home.nix;
       home-manager.extraSpecialArgs = specialArgs;
     };
+
+    commonModules = [
+      ({pkgs, ...}: {
+        nixpkgs.overlays = [
+          rust-overlay.overlays.default
+          self.overlays.mypkgs
+        ];
+      })
+      ./common-configuration.nix
+      hmConfig
+    ];
   in {
     overlays.mypkgs = final: prev: {
       gh-poi = final.callPackage ./packages/gh-poi.nix {};
@@ -40,26 +57,24 @@
 
     darwinConfigurations."Abbits-MacBook-Air" = nix-darwin.lib.darwinSystem {
       system = "aarch64-darwin";
-      modules = [
-        ({pkgs, ...}: {nixpkgs.overlays = [self.overlays.mypkgs];})
-        ./common-configuration.nix
-        ./darwin-configuration.nix
-        home-manager.darwinModules.home-manager
-        hmConfig
-      ];
-      specialArgs = specialArgs;
+      modules =
+        commonModules
+        ++ [
+          ./darwin-configuration.nix
+          home-manager.darwinModules.home-manager
+        ];
+      inherit specialArgs;
     };
 
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "aarch64-linux";
-      modules = [
-        ({pkgs, ...}: {nixpkgs.overlays = [self.overlays.mypkgs];})
-        ./common-configuration.nix
-        ./orbstack-configuration.nix
-        home-manager.nixosModules.home-manager
-        hmConfig
-      ];
-      specialArgs = specialArgs;
+      modules =
+        commonModules
+        ++ [
+          ./orbstack-configuration.nix
+          home-manager.nixosModules.home-manager
+        ];
+      inherit specialArgs;
     };
 
     formatter."aarch64-darwin" = nixpkgs.legacyPackages."aarch64-darwin".alejandra;

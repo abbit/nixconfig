@@ -4,13 +4,7 @@
   username,
   ...
 }: let
-  homedir =
-    (
-      if pkgs.stdenv.isDarwin
-      then "/Users/"
-      else "/home/"
-    )
-    + username;
+  homedir = "/Users/${username}";
 in {
   programs.zsh.enable = true;
 

@@ -1,37 +1,45 @@
 {
+  lib,
   pkgs,
   username,
   ...
 }: let
+  isDarwin = pkgs.stdenv.isDarwin;
   homedir =
     (
-      if pkgs.stdenv.isDarwin
+      if isDarwin
       then "/Users/"
       else "/home/"
     )
     + username;
 in {
-  environment.systemPackages = with pkgs; [
-    # tools
-    vim
-    fd
-    ripgrep
-    rclone
-    jq
-    nushell
-    # programming languages
-    gcc
-    nodejs_20
-    go
-    (python3.withPackages (
-      p:
-        with p; [
-          ipython
-          requests
-        ]
-    ))
-    # TODO: add rust
-  ];
+  environment.systemPackages = with pkgs;
+    [
+      # tools
+      gnumake
+      vim
+      fd
+      ripgrep
+      rclone
+      jq
+      nushell
+      # programming languages
+      go
+      nodejs_20
+      (rust-bin.stable.latest.default.override {
+        extensions = ["rust-src"];
+      })
+      (python3.withPackages (
+        p:
+          with p; [
+            ipython
+            requests
+          ]
+      ))
+    ]
+    ++ lib.optionals (!isDarwin) [
+      gcc
+    ];
 
   environment.shells = with pkgs; [
     bashInteractive
