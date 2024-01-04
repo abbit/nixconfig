@@ -17,6 +17,7 @@ in {
     [
       # tools
       gnumake
+      curl
       vim
       fd
       ripgrep
