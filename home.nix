@@ -176,12 +176,20 @@ in
     };
 
     programs.starship = {
+      package = pkgs.unstable.starship;
       enable = true;
       enableBashIntegration = false;
       enableZshIntegration = false;
       settings = {
         status.disabled = false;
+        package.disabled = true;
         container.disabled = true;
+        nix_shell = {
+          format = "in [$symbol$state]($style)";
+          symbol = "❄️ nix shell";
+          pure_msg = "(pure)";
+          impure_msg = "";
+        };
       };
     };
 
