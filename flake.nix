@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
@@ -25,12 +26,17 @@
     nixpkgs,
     nix-darwin,
     home-manager,
-    rust-overlay,
     ...
   } @ inputs: let
     username = "abbit";
 
     specialArgs = {inherit inputs username;};
+
+    overlays = [
+      inputs.rust-overlay.overlays.default
+      self.overlays.mypkgs
+      self.overlays.pkgs-unstable
+    ];
 
     hmConfig = {
       home-manager.useGlobalPkgs = true;
@@ -40,19 +46,17 @@
     };
 
     commonModules = [
-      ({pkgs, ...}: {
-        nixpkgs.overlays = [
-          rust-overlay.overlays.default
-          self.overlays.mypkgs
-        ];
-      })
+      {nixpkgs = {inherit overlays;};} # enable overlays
       ./common-configuration.nix
       hmConfig
     ];
   in {
-    overlays.mypkgs = final: prev: {
-      gh-poi = final.callPackage ./packages/gh-poi.nix {};
-      catppuccin-alacritty = final.callPackage ./packages/catppuccin-alacritty.nix {};
+    overlays = {
+      mypkgs = final: prev: {
+        gh-poi = final.callPackage ./packages/gh-poi.nix {};
+        catppuccin-alacritty = final.callPackage ./packages/catppuccin-alacritty.nix {};
+      };
+      pkgs-unstable = _: prev: {unstable = self.inputs.nixpkgs-unstable.legacyPackages.${prev.system};};
     };
 
     darwinConfigurations."Abbits-MacBook-Air" = nix-darwin.lib.darwinSystem {
