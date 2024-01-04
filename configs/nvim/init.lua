@@ -370,7 +370,8 @@ require("lazy").setup({
         function()
           local msg = "No Lsp"
           local buf_ft = vim.api.nvim_get_option_value("filetype", { buf = 0 })
-          local clients = vim.lsp.get_clients()
+          local clients = vim.lsp.get_active_clients() -- for neovim <0.10
+          -- local clients = vim.lsp.get_clients() -- for neovim >=0.10
           if next(clients) == nil then
             return msg
           end
