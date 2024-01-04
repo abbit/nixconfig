@@ -2,6 +2,7 @@
   lib,
   pkgs,
   username,
+  config,
   ...
 }: let
   isDarwin = pkgs.stdenv.isDarwin;
@@ -244,7 +245,7 @@ in
 
     xdg.configFile =
       {
-        nvim.source = ./configs/nvim;
+        nvim.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nix/configs/nvim";
       }
       // optionalAttrs isDarwin {
         "ghostty/config".text = ''
