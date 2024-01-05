@@ -186,7 +186,7 @@ in
         package.disabled = true;
         container.disabled = true;
         nix_shell = {
-          format = "in [$symbol$state]($style)";
+          format = "in [$symbol$state]($style) ";
           symbol = "❄️ nix shell";
           pure_msg = "(pure)";
           impure_msg = "";
