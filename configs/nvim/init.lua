@@ -105,8 +105,6 @@ require("lazy").setup({
       exclude = {
         filetypes = {
           "help",
-          "alpha",
-          "dashboard",
           "neo-tree",
           "Trouble",
           "trouble",
@@ -217,7 +215,7 @@ require("lazy").setup({
       local config = {
         options = {
           globalstatus = true,
-          disabled_filetypes = { statusline = { "dashboard", "alpha", "starter" } },
+          disabled_filetypes = { statusline = { "starter" } },
           -- Disable sections and component separators
           component_separators = "",
           section_separators = "",
@@ -397,68 +395,6 @@ require("lazy").setup({
 
       -- Now don't forget to initialize lualine
       lualine.setup(config)
-    end,
-  },
-
-  -- dashboard
-  {
-    "goolord/alpha-nvim",
-    event = "VimEnter",
-    opts = function()
-      local dashboard = require("alpha.themes.dashboard")
-      -- generated with https://patorjk.com/software/taag/#p=display&f=ANSI%20Shadow&t=ABTNVIM
-      local logo = [[
- █████╗ ██████╗ ████████╗███╗   ██╗██╗   ██╗██╗███╗   ███╗
-██╔══██╗██╔══██╗╚══██╔══╝████╗  ██║██║   ██║██║████╗ ████║
-███████║██████╔╝   ██║   ██╔██╗ ██║██║   ██║██║██╔████╔██║
-██╔══██║██╔══██╗   ██║   ██║╚██╗██║╚██╗ ██╔╝██║██║╚██╔╝██║
-██║  ██║██████╔╝   ██║   ██║ ╚████║ ╚████╔╝ ██║██║ ╚═╝ ██║
-╚═╝  ╚═╝╚═════╝    ╚═╝   ╚═╝  ╚═══╝  ╚═══╝  ╚═╝╚═╝     ╚═╝
-        ]]
-      dashboard.section.header.val = vim.split(logo, "\n")
-      dashboard.section.buttons.val = {
-        dashboard.button("SPC .", " " .. " Find file"),
-        dashboard.button("SPC /", " " .. " Find text"),
-        dashboard.button("SPC f n", " " .. " New file"),
-        dashboard.button("SPC f r", " " .. " Recent files"),
-        dashboard.button("SPC n c", " " .. " Open config"),
-        dashboard.button("SPC n p", "󰒲 " .. " Open lazy.nvim"),
-        dashboard.button("SPC n q", " " .. " Quit"),
-      }
-      for _, button in ipairs(dashboard.section.buttons.val) do
-        button.opts.hl = "AlphaButtons"
-        button.opts.hl_shortcut = "AlphaShortcut"
-      end
-      dashboard.section.header.opts.hl = "AlphaHeader"
-      dashboard.section.buttons.opts.hl = "AlphaButtons"
-      dashboard.section.footer.opts.hl = "AlphaFooter"
-      dashboard.opts.layout[1].val = 8
-      return dashboard
-    end,
-    config = function(_, dashboard)
-      -- from https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/plugins/ui.lua
-      -- close Lazy and re-open when the dashboard is ready
-      if vim.o.filetype == "lazy" then
-        vim.cmd.close()
-        vim.api.nvim_create_autocmd("User", {
-          pattern = "AlphaReady",
-          callback = function()
-            require("lazy").show()
-          end,
-        })
-      end
-
-      require("alpha").setup(dashboard.opts)
-
-      vim.api.nvim_create_autocmd("User", {
-        pattern = "LazyVimStarted",
-        callback = function()
-          local stats = require("lazy").stats()
-          local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
-          dashboard.section.footer.val = "Loaded " .. stats.count .. " plugins in " .. ms .. "ms"
-          pcall(vim.cmd.AlphaRedraw)
-        end,
-      })
     end,
   },
 
@@ -688,7 +624,6 @@ require("lazy").setup({
           },
           symbols_outline = true,
           lsp_trouble = true,
-          alpha = true,
           cmp = true,
           gitsigns = true,
           illuminate = true,
@@ -933,7 +868,6 @@ vim.keymap.set("n", "<leader>nq", ":qa<CR>", { desc = "Quit nvim" })
 vim.keymap.set("n", "<leader>nc", ":e $MYVIMRC<CR>", { desc = "Open nvim config" })
 vim.keymap.set("n", "<leader>np", ":Lazy<CR>", { desc = "Open lazy.nvim" })
 vim.keymap.set("n", "<leader>nm", ":Mason<CR>", { desc = "Open mason.nvim" })
-vim.keymap.set("n", "<leader>nd", ":Alpha<CR>", { desc = "Open dashboard" })
 
 -- Misc
 vim.keymap.set("n", "<leader>nl", "<Esc>:nohlsearch<CR>", { desc = "Clear highlights" })
