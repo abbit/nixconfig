@@ -1,4 +1,36 @@
 -- =======================================================
+-- 			        Utility functions
+-- =======================================================
+
+local function lsp_get_clients(opts)
+  local ret = {} ---@type lsp.Client[]
+  if vim.lsp.get_clients then
+    ret = vim.lsp.get_clients(opts)
+  else
+    ---@diagnostic disable-next-line: deprecated
+    ret = vim.lsp.get_active_clients(opts)
+    if opts and opts.method then
+      ---@param client lsp.Client
+      ret = vim.tbl_filter(function(client)
+        return client.supports_method(opts.method, { bufnr = opts.bufnr })
+      end, ret)
+    end
+  end
+  return opts and opts.filter and vim.tbl_filter(opts.filter, ret) or ret
+end
+
+---@param on_attach fun(client, buffer)
+local function lsp_on_attach(on_attach)
+  vim.api.nvim_create_autocmd("LspAttach", {
+    callback = function(args)
+      local buffer = args.buf ---@type number
+      local client = vim.lsp.get_client_by_id(args.data.client_id)
+      on_attach(client, buffer)
+    end,
+  })
+end
+
+-- =======================================================
 -- 			Pre-plugins configs
 -- =======================================================
 
@@ -35,6 +67,10 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   -- utility plugin for other plugins
   { "nvim-lua/plenary.nvim" },
+
+  -- ===================================================
+  --                 quality of life
+  -- ===================================================
 
   -- move between splits and tmux panes with CTRL-hjkl
   { "christoomey/vim-tmux-navigator" },
@@ -83,6 +119,10 @@ require("lazy").setup({
     },
   },
 
+  -- ===================================================
+  --                        UI
+  -- ===================================================
+
   -- UI icons, used by a lot of other plugins
   { "nvim-tree/nvim-web-devicons" },
 
@@ -91,6 +131,45 @@ require("lazy").setup({
 
   -- UI for notifications and LSP progress messages
   { "j-hui/fidget.nvim", opts = {} },
+
+  -- show which lines have been changed
+  { "lewis6991/gitsigns.nvim", opts = {} },
+
+  -- Colorscheme
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    priority = 1000,
+    opts = {
+      integrations = {
+        native_lsp = {
+          enabled = true,
+          underlines = {
+            errors = { "undercurl" },
+            hints = { "undercurl" },
+            warnings = { "undercurl" },
+            information = { "undercurl" },
+          },
+          symbols_outline = true,
+          lsp_trouble = true,
+          cmp = true,
+          gitsigns = true,
+          illuminate = true,
+          indent_blankline = { enabled = true },
+          mason = true,
+          telescope = true,
+          treesitter = true,
+          neotree = true,
+        },
+      },
+      -- custom_highlights = function(colors)
+      --   return {
+      --     Comment = { fg = "#00ab00" },
+      --     ["@comment"] = { fg = "#00ab00" },
+      --   }
+      -- end,
+    },
+  },
 
   -- adds indentation guides
   {
@@ -386,6 +465,38 @@ require("lazy").setup({
       })
 
       push_right({
+        -- Copilot status
+        function()
+          local icon = " "
+          local status = require("copilot.api").status.data
+          return icon .. (status.message or "")
+        end,
+        cond = function()
+          if not package.loaded["copilot"] then
+            return
+          end
+          local ok, clients = pcall(lsp_get_clients, { name = "copilot", bufnr = 0 })
+          if not ok then
+            return false
+          end
+          return ok and #clients > 0
+        end,
+        color = function()
+          if not package.loaded["copilot"] then
+            return
+          end
+          local status = require("copilot.api").status.data
+          local copilot_status_colors = {
+            [""] = colors.green,
+            ["Normal"] = colors.green,
+            ["Warning"] = colors.red,
+            ["InProgress"] = colors.blue,
+          }
+          return { fg = copilot_status_colors[status.status] or copilot_status_colors[""] }
+        end,
+      })
+
+      push_right({
         function()
           return "▊"
         end,
@@ -397,6 +508,10 @@ require("lazy").setup({
       lualine.setup(config)
     end,
   },
+
+  -- ===================================================
+  --                        Files
+  -- ===================================================
 
   -- file explorer
   {
@@ -441,6 +556,10 @@ require("lazy").setup({
       require("telescope").load_extension("live_grep_args")
     end,
   },
+
+  -- ===================================================
+  --                     Languages
+  -- ===================================================
 
   -- easily configure treesitter
   {
@@ -518,16 +637,12 @@ require("lazy").setup({
   },
   { "saadparwaiz1/cmp_luasnip" }, -- cmp source for luasnip
 
-  -- show what lines have been changed
-  { "lewis6991/gitsigns.nvim", opts = {} },
-
   -- show error messages in dedicated window
   {
     "folke/trouble.nvim",
     cmd = { "TroubleToggle", "Trouble" },
     opts = { use_diagnostic_signs = true },
     keys = {
-
       { "<leader>td", "<CMD>TroubleToggle<CR>", desc = "Toggle diagnostics" },
     },
   },
@@ -549,13 +664,19 @@ require("lazy").setup({
   {
     "stevearc/conform.nvim",
     opts = {
-      -- list of available formatters: https://github.com/stevearc/conform.nvim?tab=readme-ov-file#formatters
+      -- list of available formatters - ':help conform-formatters'
       formatters_by_ft = {
+        nix = { "alejandra" },
         lua = { "stylua" },
-        python = { "isort", "black" },
         javascript = { { "prettierd", "prettier" } },
         go = { "goimports", "gofumpt" },
-        nix = { "nixfmt" },
+        python = function(bufnr)
+          if require("conform").get_formatter_info("ruff_format", bufnr).available then
+            return { "ruff_format" }
+          else
+            return { "isort", "black" }
+          end
+        end,
       },
       format_on_save = {
         lsp_fallback = true,
@@ -603,44 +724,39 @@ require("lazy").setup({
       copilot_node_command = "node",
       server_opts_overrides = {},
     },
+    keys = {
+      {
+        "<leader>tc",
+        function()
+          local client = require("copilot.client")
+          local command = require("copilot.command")
+          if client.is_disabled() then
+            command.enable()
+            print("Copilot enabled")
+          else
+            command.disable()
+            print("Copilot disabled")
+          end
+        end,
+        desc = "Toggle copilot",
+      },
+    },
   },
   -- cmp source for github copilot
-  { "zbirenbaum/copilot-cmp", opts = {} },
-
-  -- Colorschemes
   {
-    "catppuccin/nvim",
-    name = "catppuccin",
-    priority = 1000,
-    opts = {
-      integrations = {
-        native_lsp = {
-          enabled = true,
-          underlines = {
-            errors = { "undercurl" },
-            hints = { "undercurl" },
-            warnings = { "undercurl" },
-            information = { "undercurl" },
-          },
-          symbols_outline = true,
-          lsp_trouble = true,
-          cmp = true,
-          gitsigns = true,
-          illuminate = true,
-          indent_blankline = { enabled = true },
-          mason = true,
-          telescope = true,
-          treesitter = true,
-          neotree = true,
-        },
-      },
-      -- custom_highlights = function(colors)
-      --   return {
-      --     Comment = { fg = "#00ab00" },
-      --     ["@comment"] = { fg = "#00ab00" },
-      --   }
-      -- end,
-    },
+    "zbirenbaum/copilot-cmp",
+    opts = {},
+    config = function(_, opts)
+      local copilot_cmp = require("copilot_cmp")
+      copilot_cmp.setup(opts)
+      -- attach cmp source whenever copilot attaches
+      -- fixes lazy-loading issues with the copilot cmp source
+      lsp_on_attach(function(client)
+        if client.name == "copilot" then
+          copilot_cmp._on_insert_enter({})
+        end
+      end)
+    end,
   },
 })
 
@@ -739,7 +855,7 @@ cmp.setup({
   },
   -- completion sources
   sources = {
-    { name = "path" },
+    { name = "async_path" },
     { name = "copilot" },
     { name = "nvim_lsp" },
     { name = "nvim_lua" },
@@ -793,6 +909,9 @@ vim.o.undofile = true -- save undo history to a file
 vim.o.undolevels = 1000 -- max number of undo
 vim.o.wrap = false -- dont wrap lines
 vim.o.clipboard = "unnamedplus" -- use system clipboard for copy/paste
+vim.opt.foldmethod = "expr" -- fold by treesitter
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()" -- fold by treesitter
+vim.opt.foldenable = false -- dont fold by default
 
 -- =======================================================
 -- 			Keymaps
@@ -826,11 +945,6 @@ vim.keymap.set("n", "<leader>sm", function()
   require("maximizer").toggle()
 end, { desc = "Maximize split" })
 
--- Code
-vim.keymap.set("n", "<leader>cf", function()
-  vim.lsp.buf.format({ async = false, timeout_ms = 2000 })
-end, { desc = "Format code" })
-
 -- Files
 vim.keymap.set("n", "<leader>.", telescope_builtin.find_files, { desc = "Find file" })
 vim.keymap.set("n", "<leader>/", telescope.extensions.live_grep_args.live_grep_args, { desc = "Live grep" })
@@ -842,21 +956,9 @@ end, { desc = "Yank file path" })
 vim.keymap.set("n", "<leader>fd", ":%d<CR>", { desc = "Clear file content" })
 
 -- Project
+-- TODO: use something more sofisticated
 vim.keymap.set("n", "<leader>pr", ":!make run<CR>", { desc = "Run project" })
 vim.keymap.set("n", "<leader>pt", ":!make test<CR>", { desc = "Test project" })
-
--- Toggles
-vim.keymap.set("n", "<leader>tc", function()
-  local client = require("copilot.client")
-  local command = require("copilot.command")
-  if client.is_disabled() then
-    command.enable()
-    print("Copilot enabled")
-  else
-    command.disable()
-    print("Copilot disabled")
-  end
-end, { desc = "Toggle copilot" })
 
 -- LSP
 vim.keymap.set("n", "<leader>lr", ":LspRestart<CR>", { desc = "Restart LSP" })
@@ -885,8 +987,9 @@ end, {})
 vim.api.nvim_create_user_command("CmpDisable", function()
   require("cmp").setup({ enabled = false })
 end, {})
+
 -- SimpleMode custom commands
--- Simple mode disables LSP, autocompletion and syntax highlighting
+-- SimpleMode disables LSP, autocompletion and syntax highlighting
 function EnableSimpleMode()
   vim.cmd([[
         LspStop
