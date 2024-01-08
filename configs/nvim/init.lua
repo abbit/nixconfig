@@ -132,9 +132,6 @@ require("lazy").setup({
   -- UI for notifications and LSP progress messages
   { "j-hui/fidget.nvim", opts = {} },
 
-  -- show which lines have been changed
-  { "lewis6991/gitsigns.nvim", opts = {} },
-
   -- Colorscheme
   {
     "catppuccin/nvim",
@@ -509,6 +506,46 @@ require("lazy").setup({
     end,
   },
 
+  -- show which lines have been changed
+  {
+    "lewis6991/gitsigns.nvim",
+    opts = {
+      on_attach = function(buffer)
+        local gs = package.loaded.gitsigns
+
+        local function map(mode, l, r, desc)
+          vim.keymap.set(mode, l, r, { buffer = buffer, desc = desc })
+        end
+
+        -- stylua: ignore start
+        map("n", "<leader>g]", gs.next_hunk, "Next Hunk")
+        map("n", "<leader>g[", gs.prev_hunk, "Prev Hunk")
+        map("n", "<leader>gp", gs.preview_hunk, "Preview Hunk")
+        map({ "n", "v" }, "<leader>gs", gs.stage_hunk, "Stage Hunk")
+        map({ "n", "v" }, "<leader>gr", gs.reset_hunk, "Reset Hunk")
+        map("n", "<leader>gu", gs.undo_stage_hunk, "Undo Stage Hunk")
+        map("n", "<leader>gS", gs.stage_buffer, "Stage Buffer")
+        map("n", "<leader>gR", gs.reset_buffer, "Reset Buffer")
+        map("n", "<leader>gU", gs.reset_buffer_index, "Undo Stage Buffer")
+        map("n", "<leader>gb", function() gs.blame_line({ full = true }) end, "Blame Line")
+        map("n", "<leader>gd", gs.diffthis, "Diff This")
+      end,
+    },
+  },
+
+  -- magit-like git UI
+  {
+    "NeogitOrg/neogit",
+    dependencies = {
+      "sindrets/diffview.nvim", -- optional - Diff integration
+    },
+    opts = {},
+    keys = {
+      { "<leader>gg", "<cmd>Neogit<cr>", desc = "Open Neogit" },
+      { "<leader>gc", "<cmd>Neogit commit<cr>", desc = "Open Neogit commit popup" },
+    },
+  },
+
   -- ===================================================
   --                        Files
   -- ===================================================
@@ -522,7 +559,7 @@ require("lazy").setup({
       "MunifTanjim/nui.nvim",
     },
     keys = {
-      { "<leader>te", "<cmd>Neotree toggle<cr>", desc = "NeoTree" },
+      { "<leader>te", "<cmd>Neotree toggle<cr>", desc = "Toggle NeoTree" },
     },
     opts = {
       sources = { "filesystem", "buffers", "git_status", "document_symbols" },
@@ -938,21 +975,19 @@ vim.keymap.set("n", "<leader>bl", telescope_builtin.buffers, { desc = "List buff
 vim.keymap.set("n", "<leader>`", ":e #<CR>", { desc = "Switch to last buffer" })
 
 -- Splits
+-- stylua: ignore start
 vim.keymap.set("n", "<leader>sv", "<C-W>s", { desc = "Open vertical split" })
 vim.keymap.set("n", "<leader>sh", "<C-W>v", { desc = "Open horizontal split" })
 vim.keymap.set("n", "<leader>sd", ":close<CR>", { desc = "Close split" })
-vim.keymap.set("n", "<leader>sm", function()
-  require("maximizer").toggle()
-end, { desc = "Maximize split" })
+vim.keymap.set("n", "<leader>sm", function() require("maximizer").toggle() end, { desc = "Maximize split" })
 
 -- Files
+-- stylua: ignore start
 vim.keymap.set("n", "<leader>.", telescope_builtin.find_files, { desc = "Find file" })
 vim.keymap.set("n", "<leader>/", telescope.extensions.live_grep_args.live_grep_args, { desc = "Live grep" })
 vim.keymap.set("n", "<leader>fr", telescope_builtin.oldfiles, { desc = "Recent files" })
 vim.keymap.set("n", "<leader>fn", ":enew<CR>", { desc = "New file" })
-vim.keymap.set("n", "<leader>fy", function()
-  vim.cmd([[let @+ = expand('%:p')]])
-end, { desc = "Yank file path" })
+vim.keymap.set("n", "<leader>fy", function() vim.cmd([[let @+ = expand('%:p')]]) end, { desc = "Yank file path" })
 vim.keymap.set("n", "<leader>fd", ":%d<CR>", { desc = "Clear file content" })
 
 -- Project
