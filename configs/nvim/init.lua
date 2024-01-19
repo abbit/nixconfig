@@ -195,6 +195,7 @@ require("lazy").setup({
   },
 
   -- automatically highlights other instances of the word under cursor
+  -- TODO: use something that has persistent hight
   {
     "RRethy/vim-illuminate",
     event = { "BufReadPost", "BufNewFile" },
@@ -685,16 +686,14 @@ require("lazy").setup({
   },
 
   -- show symbols in current file
-  -- TODO: migrate to someting else
   {
-    "simrat39/symbols-outline.nvim",
-    cmd = { "SymbolsOutline", "SymbolsOutlineOpen" },
+    "hedyhli/outline.nvim",
+    lazy = true,
+    cmd = { "Outline", "OutlineOpen" },
     keys = {
-      { "<leader>to", "<CMD>SymbolsOutline<CR>", desc = "Toggle Outline" },
+      { "<leader>to", "<cmd>Outline<CR>", desc = "Toggle Outline" },
     },
-    opts = {
-      autofold_depth = 1,
-    },
+    opts = {},
   },
 
   -- format code
