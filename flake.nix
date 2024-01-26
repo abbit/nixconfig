@@ -1,5 +1,5 @@
 {
-  description = "Abbit's darwin system flake";
+  description = "Abbit's Nix configuration flake";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
@@ -52,12 +52,8 @@
     ];
   in {
     overlays = {
-      mypkgs = final: _: {
-        gh-poi = final.callPackage ./packages/gh-poi.nix {};
-        catppuccin-alacritty = final.callPackage ./packages/catppuccin-alacritty.nix {};
-        mangal-fork = final.callPackage ./packages/mangal-fork.nix {};
-      };
-      pkgs-unstable = _: prev: {unstable = self.inputs.nixpkgs-unstable.legacyPackages.${prev.system};};
+      mypkgs = final: _: (import ./packages {pkgs = final;});
+      pkgs-unstable = final: _: {unstable = self.inputs.nixpkgs-unstable.legacyPackages.${final.system};};
     };
 
     darwinConfigurations."Abbits-MacBook-Air" = nix-darwin.lib.darwinSystem {
@@ -81,8 +77,5 @@
         ];
       inherit specialArgs;
     };
-
-    formatter."aarch64-darwin" = nixpkgs.legacyPackages."aarch64-darwin".alejandra;
-    formatter."aarch64-linux" = nixpkgs.legacyPackages."aarch64-linux".alejandra;
   };
 }
