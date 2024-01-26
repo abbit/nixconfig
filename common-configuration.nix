@@ -18,14 +18,14 @@ in {
       # tools
       gnumake
       curl
-      vim
+      neovim
       fd
       ripgrep
       jq
       nushell
       # programming languages
       go
-      nodejs_20
+      nodejs
       (rust-bin.stable.latest.default.override {
         extensions = ["rust-src"];
       })
