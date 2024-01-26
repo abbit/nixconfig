@@ -21,7 +21,6 @@ in {
       vim
       fd
       ripgrep
-      rclone
       jq
       nushell
       # programming languages

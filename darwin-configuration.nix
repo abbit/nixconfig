@@ -6,6 +6,10 @@
 }: let
   homedir = "/Users/${username}";
 in {
+  environment.systemPackages = with pkgs; [
+    rclone
+  ];
+
   programs.zsh.enable = true;
 
   # Needed to address bug where $PATH is not properly set for fish:
