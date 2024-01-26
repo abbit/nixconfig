@@ -52,9 +52,10 @@
     ];
   in {
     overlays = {
-      mypkgs = final: prev: {
+      mypkgs = final: _: {
         gh-poi = final.callPackage ./packages/gh-poi.nix {};
         catppuccin-alacritty = final.callPackage ./packages/catppuccin-alacritty.nix {};
+        mangal-fork = final.callPackage ./packages/mangal-fork.nix {};
       };
       pkgs-unstable = _: prev: {unstable = self.inputs.nixpkgs-unstable.legacyPackages.${prev.system};};
     };

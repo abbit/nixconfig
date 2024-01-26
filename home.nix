@@ -50,7 +50,7 @@ in
       ]
       ++ optionals isDarwin [
         ffmpeg
-        mangal
+        mangal-fork
       ];
 
     home.sessionPath = [
