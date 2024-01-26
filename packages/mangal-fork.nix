@@ -1,18 +1,16 @@
 {
   lib,
-  stdenv,
   fetchFromGitHub,
   buildGoModule,
-  installShellFiles,
 }:
 buildGoModule rec {
-  pname = "mangal";
-  version = "main";
+  pname = "mangal-fork";
+  version = "c344e3c34a00a0bebe8de3223170b69800648985";
 
   src = fetchFromGitHub {
     owner = "luevano";
-    repo = "${pname}";
-    rev = "c344e3c34a00a0bebe8de3223170b69800648985";
+    repo = "mangal";
+    rev = version;
     hash = "sha256-4D6VZP7afMvItR4ElHG6+jUS9v8DLMsEaItX55N9cP0=";
   };
 
@@ -20,18 +18,10 @@ buildGoModule rec {
 
   ldflags = ["-s" "-w"];
 
-  nativeBuildInputs = [installShellFiles];
-
+  # supress error about embedding web/ui/dist folder
   preBuild = ''
     mkdir -p web/ui/dist
     echo "mangal web ui :)" > web/ui/dist/index.html
-  '';
-
-  postInstall = lib.optionalString (stdenv.hostPlatform == stdenv.buildPlatform) ''
-    # Mangal creates a config file in the folder ~/.config/mangal and fails if not possible
-    export MANGAL_CONFIG_PATH=`mktemp -d`
-    installShellCompletion --cmd mangal \
-      --fish <($out/bin/mangal completion fish)
   '';
 
   doCheck = false; # test fail because of sandbox
