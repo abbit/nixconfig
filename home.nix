@@ -269,5 +269,7 @@ in
           quit-after-last-window-closed = true
           command = ${terminal.shell.command}
         '';
+
+        mangal.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nix/configs/mangal";
       };
   }

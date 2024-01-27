@@ -1,0 +1,68 @@
+icons = 'Nerd'
+
+[cli]
+colored_help = true
+
+[cli.mode]
+default = 'TUI'
+
+[download]
+format = 'CBZ'
+path = '/Users/abbit/Documents/Manga'
+skip_if_exists = true
+strict = true
+
+[download.chapter]
+name_template = '{{ printf "[%06.1f] %s" .Number .Title | sanitize }}'
+
+[download.manga]
+banner = false
+cover = false
+create_dir = true
+name_template = '{{ .Title | sanitize }}'
+
+[download.metadata]
+comicinfo_xml = false
+series_json = false
+
+[download.volume]
+create_dir = false
+name_template = '{{ printf "Vol. %d" .Number | sanitize }}'
+
+[library]
+path = ''
+
+[providers]
+parallelism = 15
+
+[providers.cache]
+ttl = '24h'
+
+[providers.filter]
+avoid_duplicate_chapters = true
+language = 'en'
+mangadex_datasaver = false
+nsfw = true
+show_unavailable_chapters = false
+title_chapter_number = false
+
+[providers.headless]
+flaresolverr_url = 'http://localhost:8191/v1'
+use_flaresolverr = false
+
+[read]
+download_on_read = false
+format = 'CBZ'
+
+[read.history]
+anilist = false
+local = true
+
+[tui]
+expand_single_volume = true
+
+[tui.chapter]
+number_format = '[%06.1f]'
+show_date = true
+show_group = true
+show_number = true
