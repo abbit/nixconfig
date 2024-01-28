@@ -12,8 +12,9 @@ path = '/Users/abbit/Documents/Manga'
 skip_if_exists = true
 strict = true
 
-[download.chapter]
-name_template = '{{ printf "[%06.1f] %s" .Number .Title | sanitize }}'
+[download.metadata]
+comicinfo_xml = false
+series_json = false
 
 [download.manga]
 banner = false
@@ -21,13 +22,12 @@ cover = false
 create_dir = true
 name_template = '{{ .Title | sanitize }}'
 
-[download.metadata]
-comicinfo_xml = false
-series_json = false
-
 [download.volume]
 create_dir = false
 name_template = '{{ printf "Vol. %d" .Number | sanitize }}'
+
+[download.chapter]
+name_template = '{{ printf "[%06.1f] Vol. %d %s" .Number .Volume.Number .Title | sanitize }}'
 
 [library]
 path = ''
@@ -56,7 +56,7 @@ format = 'CBZ'
 
 [read.history]
 anilist = false
-local = true
+local = false
 
 [tui]
 expand_single_volume = true
