@@ -120,6 +120,7 @@ in
       settings.aliases = {
         co = "pr checkout";
         clone = "repo clone";
+        sync = "repo sync";
       };
       settings.prompt = "enabled";
       extensions = with pkgs; [
