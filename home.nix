@@ -265,7 +265,7 @@ in
           font-size = ${builtins.toString terminal.font.size}
           font-family = ${terminal.font.family}
 
-          macos-titlebar-tabs = true
+          macos-titlebar-tabs = false
           macos-option-as-alt = true
           mouse-hide-while-typing = true
           quit-after-last-window-closed = true
