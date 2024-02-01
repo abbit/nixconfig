@@ -27,7 +27,7 @@ create_dir = false
 name_template = '{{ printf "Vol. %d" .Number | sanitize }}'
 
 [download.chapter]
-name_template = '{{ printf "[%06.1f] Vol. %d %s" .Number .Volume.Number .Title | sanitize }}'
+name_template = '{{ printf "[%06.1f] %s" .Number .Title | sanitize }}'
 
 [library]
 path = ''
