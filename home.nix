@@ -91,6 +91,7 @@ in
 
     programs.git = {
       enable = true;
+      lfs.enable = true;
       userName = "Mikhail Kopylov";
       userEmail = "kopylovmichaelfl@gmail.com";
       aliases = {
