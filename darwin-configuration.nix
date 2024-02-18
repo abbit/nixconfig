@@ -10,12 +10,6 @@ in {
     rclone
   ];
 
-  environment.variables = {
-    "https_proxy" = "http://127.0.0.1:7897";
-    "http_proxy" = "http://127.0.0.1:7897";
-    "all_proxy" = "socks5://127.0.0.1:7897";
-  };
-
   programs.zsh.enable = true;
 
   # Needed to address bug where $PATH is not properly set for fish:
