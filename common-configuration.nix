@@ -24,8 +24,8 @@ in {
       jq
       nushell
       # programming languages
-      go
-      nodejs
+      unstable.go_1_22
+      unstable.nodejs_20
       (rust-bin.stable.latest.default.override {
         extensions = ["rust-src"];
       })
