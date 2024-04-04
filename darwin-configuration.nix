@@ -74,6 +74,7 @@ in {
         AppleShowAllFiles = true;
         FXPreferredViewStyle = "Nlsv"; # Change default Finder view to List view
       };
+      dock.mru-spaces = false; # Do not automatically rearrange Spaces
     };
   };
 
