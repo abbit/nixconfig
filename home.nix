@@ -21,12 +21,6 @@
     tree = "eza --tree";
     ipy = "python3 -m IPython";
   };
-
-  terminal = {
-    font.family = "JetBrainsMonoNL Nerd Font";
-    font.size = 13;
-    shell.command = "${pkgs.fish}/bin/fish";
-  };
 in
   with lib; {
     # This value determines the Home Manager release that your
@@ -240,19 +234,7 @@ in
         nvim.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nix/configs/nvim";
       }
       // optionalAttrs isDarwin {
-        "ghostty/config".text = ''
-          theme = catppuccin-mocha
-
-          font-size = ${builtins.toString terminal.font.size}
-          font-family = ${terminal.font.family}
-
-          macos-titlebar-tabs = false
-          macos-option-as-alt = true
-          mouse-hide-while-typing = true
-          quit-after-last-window-closed = true
-          command = ${terminal.shell.command}
-        '';
-
+        ghostty.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nix/configs/ghostty";
         mangal.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nix/configs/mangal";
       };
   }

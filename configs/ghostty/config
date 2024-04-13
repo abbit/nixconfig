@@ -1,0 +1,10 @@
+theme = catppuccin-mocha
+
+font-size = 13
+font-family = "JetBrainsMonoNL Nerd Font"
+
+macos-titlebar-tabs = false
+macos-option-as-alt = true
+mouse-hide-while-typing = true
+quit-after-last-window-closed = true
+command = "/etc/profiles/per-user/abbit/bin/fish"
