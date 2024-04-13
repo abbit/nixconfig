@@ -235,26 +235,6 @@ in
       '';
     };
 
-    programs.alacritty = mkIf isDarwin {
-      enable = true;
-      settings = {
-        import = ["${pkgs.catppuccin-alacritty}/catppuccin-mocha.yml"];
-
-        font.size = terminal.font.size;
-        font.normal.family = terminal.font.family;
-        font.normal.style = "Regular";
-
-        mouse.hide_when_typing = true;
-
-        scrolling.history = 10000;
-        scrolling.multiplier = 3;
-
-        window.decorations = "full";
-        window.padding.x = 0;
-        window.padding.y = 0;
-      };
-    };
-
     xdg.configFile =
       {
         nvim.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nix/configs/nvim";
