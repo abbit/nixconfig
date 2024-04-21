@@ -204,7 +204,17 @@ in
       mouse = true;
       shortcut = "a";
       terminal = "xterm-256color";
-      plugins = with pkgs.tmuxPlugins; [vim-tmux-navigator];
+      plugins = with pkgs.tmuxPlugins; [
+        vim-tmux-navigator
+        {
+          plugin = power-theme;
+          extraConfig = ''
+            set -g @tmux_power_theme 'violet'
+            set -g @tmux_power_date_format '%d/%m/%y'
+            set -g @tmux_power_time_format '%H:%M'
+          '';
+        }
+      ];
       extraConfig = ''
         # ============================
         #   Settings
