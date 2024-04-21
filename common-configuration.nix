@@ -37,7 +37,7 @@ in {
           ]
       ))
       # LSPs, linters, formatters, etc.
-      alejandra # nix formatter
+      alejandra
     ]
     ++ lib.optionals (!isDarwin) [
       gcc

@@ -196,6 +196,43 @@ in
       options = ["--cmd c"];
     };
 
+    programs.tmux = {
+      enable = true;
+      baseIndex = 1;
+      escapeTime = 10;
+      keyMode = "vi";
+      mouse = true;
+      shortcut = "a";
+      terminal = "xterm-256color";
+      plugins = with pkgs.tmuxPlugins; [vim-tmux-navigator];
+      extraConfig = ''
+        # ============================
+        #   Settings
+        # ============================
+        set-option -g focus-events on
+
+        set -g default-command ${pkgs.fish}/bin/fish
+        set -g default-shell ${pkgs.fish}/bin/fish
+
+        # renumber windows when a window is closed
+        set-option -g renumber-windows on
+
+        # ============================
+        #   Binds
+        # ============================
+
+        # Open new panes and windows in current path
+        unbind '"'
+        bind v split-window -v -c "#{pane_current_path}"
+        unbind %
+        bind h split-window -h -c "#{pane_current_path}"
+        bind c new-window -c "#{pane_current_path}"
+        # maximizing and minimizing tmux pane
+        unbind z
+        bind -r m resize-pane -Z
+      '';
+    };
+
     # ==========================================
     #         Macbook-specific
     # ==========================================
