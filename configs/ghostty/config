@@ -3,6 +3,9 @@ theme = catppuccin-mocha
 font-size = 13
 font-family = "JetBrainsMonoNL Nerd Font"
 
+window-width = 130
+window-height = 40
+
 macos-titlebar-tabs = false
 macos-option-as-alt = true
 mouse-hide-while-typing = true
