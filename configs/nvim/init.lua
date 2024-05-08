@@ -702,6 +702,7 @@ require("lazy").setup({
     opts = {
       -- list of available formatters - ':help conform-formatters'
       formatters_by_ft = {
+        yaml = { "yamlfmt" },
         nix = { "alejandra" },
         lua = { "stylua" },
         javascript = { { "prettierd", "prettier" } },
@@ -749,6 +750,7 @@ require("lazy").setup({
         },
       },
       filetypes = {
+        yaml = true,
         help = false,
         gitcommit = false,
         gitrebase = false,
