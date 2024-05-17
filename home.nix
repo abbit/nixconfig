@@ -41,6 +41,7 @@ in
         fastfetch
         scc
         tlrc
+        libiconv
       ]
       ++ optionals isDarwin [
         ffmpeg
@@ -57,6 +58,7 @@ in
       LC_CTYPE = "en_US.UTF-8";
       LC_ALL = "en_US.UTF-8";
       DIRENV_LOG_FORMAT = ""; # silence direnv logging
+      RUSTFLAGS = "-L ${pkgs.libiconv}/lib"; # fix for build errors on macos
     };
 
     # Let home-manager manage itself
