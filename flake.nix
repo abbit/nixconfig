@@ -56,26 +56,30 @@
       pkgs-unstable = final: _: {unstable = self.inputs.nixpkgs-unstable.legacyPackages.${final.system};};
     };
 
-    darwinConfigurations."Abbits-MacBook-Air" = nix-darwin.lib.darwinSystem {
-      system = "aarch64-darwin";
-      modules =
-        commonModules
-        ++ [
-          ./darwin-configuration.nix
-          home-manager.darwinModules.home-manager
-        ];
-      inherit specialArgs;
+    darwinConfigurations = {
+      macos = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        modules =
+          commonModules
+          ++ [
+            ./darwin-configuration.nix
+            home-manager.darwinModules.home-manager
+          ];
+        inherit specialArgs;
+      };
     };
 
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      system = "aarch64-linux";
-      modules =
-        commonModules
-        ++ [
-          ./orbstack-configuration.nix
-          home-manager.nixosModules.home-manager
-        ];
-      inherit specialArgs;
+    nixosConfigurations = {
+      orb = nixpkgs.lib.nixosSystem {
+        system = "aarch64-linux";
+        modules =
+          commonModules
+          ++ [
+            ./orbstack-configuration.nix
+            home-manager.nixosModules.home-manager
+          ];
+        inherit specialArgs;
+      };
     };
   };
 }
