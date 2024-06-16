@@ -123,7 +123,7 @@ in
       };
       settings.prompt = "enabled";
       extensions = with pkgs; [
-        gh-poi
+        unstable.gh-poi
       ];
     };
 
