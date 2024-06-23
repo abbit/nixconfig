@@ -3,18 +3,15 @@ icons = 'Nerd'
 [cli]
 colored_help = true
 
-[cli.mode]
-default = 'TUI'
-
 [download]
 format = 'CBZ'
 path = '/Users/abbit/Documents/Manga'
 skip_if_exists = true
-strict = true
 
 [download.metadata]
 comicinfo_xml = false
 series_json = false
+strict = false
 
 [download.manga]
 banner = false
@@ -35,16 +32,18 @@ path = ''
 [providers]
 parallelism = 15
 
-[providers.cache]
+[cache]
 ttl = '24h'
 
 [providers.filter]
 avoid_duplicate_chapters = true
 language = 'en'
-mangadex_datasaver = false
 nsfw = true
 show_unavailable_chapters = false
 title_chapter_number = false
+
+[providers.mangadex]
+data_saver = false
 
 [providers.headless]
 flaresolverr_url = 'http://localhost:8191/v1'
