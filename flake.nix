@@ -34,7 +34,7 @@
 
     overlays = [
       inputs.rust-overlay.overlays.default
-      self.overlays.mypkgs
+      self.overlays.my-pkgs
       self.overlays.pkgs-unstable
     ];
 
@@ -52,7 +52,7 @@
     ];
   in {
     overlays = {
-      mypkgs = final: _: (import ./packages {pkgs = final;});
+      my-pkgs = final: _: (import ./pkgs {pkgs = final;});
       pkgs-unstable = final: _: {unstable = self.inputs.nixpkgs-unstable.legacyPackages.${final.system};};
     };
 
