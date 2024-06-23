@@ -59,8 +59,7 @@ in {
     ];
   };
 
-  fonts.fontDir.enable = true;
-  fonts.fonts = [(pkgs.nerdfonts.override {fonts = ["JetBrainsMono"];})];
+  fonts.packages = [(pkgs.nerdfonts.override {fonts = ["JetBrainsMono"];})];
 
   system = {
     defaults = {
