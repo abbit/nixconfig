@@ -5,16 +5,16 @@
 }:
 buildGoModule rec {
   pname = "mangal-fork";
-  version = "2723f39d1bf5c89fa8a9abd4ddff742d0ae61284";
+  version = "v5.9.1";
 
   src = fetchFromGitHub {
     owner = "luevano";
     repo = "mangal";
     rev = version;
-    hash = "sha256-2qbflNWdPw9NTzmEOOCGAr6LpuIvxnKKic+noHS5jxY=";
+    hash = "sha256-hE4fjGimarlrTtt3mz2TwFnU8FREhoNlzh4wLN/vv1U=";
   };
 
-  vendorHash = "sha256-LWtbw/Nf3fU1MPSuHcFDtgbHnqNUlxwjqbTpQ27q7pM=";
+  vendorHash = "sha256-+rYrzcTEgwoOpv1XtM2UD8IaqA2xh9QmVAO755UG8Lc=";
 
   ldflags = ["-s" "-w"];
 
