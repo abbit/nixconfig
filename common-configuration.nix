@@ -18,6 +18,7 @@ in {
       # tools
       gnumake
       curl
+      wget
       neovim
       fd
       ripgrep
