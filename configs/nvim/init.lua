@@ -3,14 +3,13 @@
 -- =======================================================
 
 local function lsp_get_clients(opts)
-  local ret = {} ---@type lsp.Client[]
+  local ret = {}
   if vim.lsp.get_clients then
     ret = vim.lsp.get_clients(opts)
   else
     ---@diagnostic disable-next-line: deprecated
     ret = vim.lsp.get_active_clients(opts)
     if opts and opts.method then
-      ---@param client lsp.Client
       ret = vim.tbl_filter(function(client)
         return client.supports_method(opts.method, { bufnr = opts.bufnr })
       end, ret)
@@ -445,8 +444,7 @@ require("lazy").setup({
         function()
           local msg = "No Lsp"
           local buf_ft = vim.api.nvim_get_option_value("filetype", { buf = 0 })
-          local clients = vim.lsp.get_active_clients() -- for neovim <0.10
-          -- local clients = vim.lsp.get_clients() -- for neovim >=0.10
+          local clients = vim.lsp.get_clients()
           if next(clients) == nil then
             return msg
           end
@@ -676,12 +674,17 @@ require("lazy").setup({
   { "saadparwaiz1/cmp_luasnip" }, -- cmp source for luasnip
 
   -- show error messages in dedicated window
+  -- TODO: check new features (e.g. showing document symbols)
   {
     "folke/trouble.nvim",
-    cmd = { "TroubleToggle", "Trouble" },
+    cmd = "Trouble",
     opts = { use_diagnostic_signs = true },
     keys = {
-      { "<leader>td", "<CMD>TroubleToggle<CR>", desc = "Toggle diagnostics" },
+      {
+        "<leader>td",
+        "<cmd>Trouble diagnostics toggle<cr>",
+        desc = "Diagnostics (Trouble)",
+      },
     },
   },
 
@@ -868,7 +871,7 @@ vim.diagnostic.config({
   float = {
     style = "minimal",
     border = "rounded",
-    source = "always",
+    source = true,
     header = "",
     prefix = "",
   },
