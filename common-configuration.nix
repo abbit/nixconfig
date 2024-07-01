@@ -23,7 +23,7 @@ in {
       fd
       ripgrep
       jq
-      nushell
+      unstable.nushell
       # programming languages
       unstable.go_1_22
       unstable.nodejs_20
