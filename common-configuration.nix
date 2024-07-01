@@ -24,6 +24,7 @@ in {
       jq
       unstable.neovim
       unstable.nushell
+      unstable.just
       # programming languages
       unstable.go_1_22
       unstable.nodejs_20
