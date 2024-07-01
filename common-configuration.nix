@@ -19,10 +19,10 @@ in {
       gnumake
       curl
       wget
-      neovim
       fd
       ripgrep
       jq
+      unstable.neovim
       unstable.nushell
       # programming languages
       unstable.go_1_22
