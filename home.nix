@@ -42,6 +42,10 @@ in
         scc
         tlrc
         libiconv
+        # for emacs
+        fontconfig
+        coreutils-prefixed
+        gnutls
       ]
       ++ optionals isDarwin [
         ffmpeg
@@ -51,6 +55,7 @@ in
     home.sessionPath = [
       "$HOME/.cargo/bin"
       "$HOME/go/bin"
+      "$HOME/.emacs.d/bin"
     ];
 
     home.sessionVariables = {
@@ -61,6 +66,8 @@ in
       RUSTFLAGS = "-L ${pkgs.libiconv}/lib"; # fix for build errors on macos
     };
 
+    fonts.fontconfig.enable = true;
+
     # Let home-manager manage itself
     programs.home-manager.enable = true;
 
@@ -68,6 +75,11 @@ in
     programs.htop.enable = true;
     programs.lazygit.enable = true;
     programs.eza.enable = true;
+
+    programs.emacs = {
+      enable = true;
+      extraPackages = epkgs: with epkgs; [vterm];
+    };
 
     programs.bat = {
       enable = true;
@@ -248,10 +260,7 @@ in
       '';
     };
 
-    # ==========================================
-    #         Macbook-specific
-    # ==========================================
-
+    # hack for macos
     programs.zsh = mkIf isDarwin {
       enable = true;
       shellAliases = shellAliases;
@@ -284,6 +293,7 @@ in
     xdg.configFile =
       {
         nvim.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nix/configs/nvim";
+        doom.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nix/configs/doom";
       }
       // optionalAttrs isDarwin {
         ghostty.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nix/configs/ghostty";
