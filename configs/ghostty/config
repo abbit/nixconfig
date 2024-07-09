@@ -6,6 +6,7 @@ font-family = "JetBrainsMonoNL Nerd Font"
 window-width = 150
 window-height = 45
 
+window-save-state = never
 macos-option-as-alt = true
 mouse-hide-while-typing = true
 quit-after-last-window-closed = true
