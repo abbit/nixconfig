@@ -4,7 +4,7 @@
 ;; sync' after modifying this file!
 
 (setq default-frame-alist
-      '((left . 170)
+      '((left . 122)
         (top . 20)
         (width . 150)
         (height . 50)))
@@ -127,10 +127,11 @@
 
 (after! org
   (setq org-todo-keywords
-      '((sequence "TODO(t)" "PROGRESS(p)" "PAUSE(s)" "|" "DONE(d)" "CANCELED(c)")))
+      '((sequence "TODO(t)" "PROGRESS(p)" "PAUSE(s)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)")))
   (setq org-todo-keyword-faces
       '(("PROGRESS" . (:foreground "orange1" :weight bold))
         ("PAUSE" . (:foreground "DarkSlateBlue"))
+        ("WAITING" . (:foreground "blue"))
         ("CANCELED" . (:foreground "red")))))
 
 (after! cider
