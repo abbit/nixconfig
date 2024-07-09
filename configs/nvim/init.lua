@@ -969,6 +969,8 @@ vim.keymap.set({ "n", "x" }, "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, si
 
 -- Buffers
 vim.keymap.set("n", "<leader>w", ":w<CR>", { desc = "Save buffer" })
+-- alternative save bind to CMD + s
+vim.keymap.set("n", "<D-s>", ":w<CR>", { desc = "Save buffer" })
 vim.keymap.set("n", "<leader>bn", "<cmd>BufferLineCycleNext<CR>", { desc = "Next buffer" })
 vim.keymap.set("n", "<leader>bp", "<cmd>BufferLineCyclePrev<CR>", { desc = "Previous buffer" })
 vim.keymap.set("n", "<leader>by", function()
