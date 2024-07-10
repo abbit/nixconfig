@@ -861,8 +861,8 @@ require("mason-lspconfig").setup({
 -- Configure LSP diagnostics
 lsp_zero.set_sign_icons({
   error = "✘",
-  warn = "▲",
-  hint = "⚑",
+  warn = "",
+  hint = "󰌵",
   info = "",
 })
 
