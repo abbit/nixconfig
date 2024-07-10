@@ -850,6 +850,11 @@ require("mason-lspconfig").setup({
         },
       })
     end,
+    clangd = function()
+      lspconfig.clangd.setup({
+        filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
+      })
+    end,
   },
 })
 
