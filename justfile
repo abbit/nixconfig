@@ -1,10 +1,31 @@
 [private]
 default:
-    @just --list
+    @just --choose
 
 # update all flake inputs
-update:
+update-flake:
     nix flake update
+
+# update brew and packages
+[macos]
+update-brew:
+    brew update
+    brew upgrade
+
+[linux]
+update-brew:
+    echo "Skipping brew update on linux"
+
+# update neovim plugins
+update-nvim:
+    nvim --headless "+Lazy! sync" +qa
+
+# update doom emacs
+update-emacs:
+    doom upgrade
+    doom sync
+
+update-all: update-flake update-brew update-nvim update-emacs
 
 # remove all generations older than 7 days
 clean:
