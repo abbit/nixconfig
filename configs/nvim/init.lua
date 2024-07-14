@@ -25,3 +25,6 @@ require("lazy").setup("plugins", {
   },
 })
 require("config.autocmds")
+
+-- TODO: check https://github.com/ray-x/go.nvim
+-- TODO: check https://github.com/ray-x/navigator.lua
