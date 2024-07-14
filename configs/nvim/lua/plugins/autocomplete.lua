@@ -11,12 +11,12 @@ return {
       { "zbirenbaum/copilot-cmp" }, -- cmp source for copilot
     },
     config = function()
-      local lsp_zero = require("lsp-zero")
       local cmp = require("cmp")
-      local cmp_action = lsp_zero.cmp_action()
-      local cmp_format = lsp_zero.cmp_format()
+      local luasnip = require("luasnip")
 
-      vim.opt.completeopt = { "menu", "menuone", "noselect" } -- preselect first item in completion menu
+      -- preselect first item in completion menu
+      vim.opt.completeopt = { "menu", "menuone", "noselect" }
+
       cmp.setup({
         -- general
         preselect = "item",
@@ -24,35 +24,76 @@ return {
           completeopt = "menu,menuone,noinsert",
         },
         -- styles
-        formatting = cmp_format,
+        formatting = {
+          -- order of fields in completion menu
+          fields = { "abbr", "menu", "kind" },
+          -- format completion menu item
+          format = function(entry, item)
+            local src_name = entry.source.name
+
+            local label = ""
+            if src_name == "nvim_lsp" then
+              label = "[LSP]"
+            elseif src_name == "nvim_lua" then
+              label = "[nvim]"
+            else
+              label = string.format("[%s]", src_name)
+            end
+            item.menu = label
+
+            return item
+          end,
+        },
         window = {
           documentation = cmp.config.window.bordered(),
         },
-        -- completion sources
-        sources = {
+        -- completion sources in priority order
+        sources = cmp.config.sources({
           { name = "async_path" },
           { name = "copilot" },
-          { name = "nvim_lsp" },
           { name = "nvim_lua" },
-          { name = "buffer", keyword_length = 3 },
+          { name = "nvim_lsp" },
           { name = "luasnip", keyword_length = 2 },
-        },
+          { name = "buffer", keyword_length = 3 },
+        }),
         -- keymaps
         mapping = cmp.mapping.preset.insert({
           -- confirm completion item
           ["<CR>"] = cmp.mapping.confirm({ select = false }),
-
           -- toggle completion menu
-          ["<C-e>"] = cmp_action.toggle_completion(),
-
-          -- navigate between snippet placeholder
-          ["<C-d>"] = cmp_action.luasnip_jump_forward(),
-          ["<C-b>"] = cmp_action.luasnip_jump_backward(),
-
+          ["<C-e>"] = cmp.mapping(function()
+            if cmp.visible() then
+              cmp.abort()
+            else
+              cmp.complete()
+            end
+          end),
+          -- jump to next snippet placeholder
+          ["<C-d>"] = cmp.mapping(function(fallback)
+            if luasnip.jumpable(1) then
+              luasnip.jump(1)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
+          -- jump to previous snippet placeholder
+          ["<C-b>"] = cmp.mapping(function(fallback)
+            if luasnip.jumpable(-1) then
+              luasnip.jump(-1)
+            else
+              fallback()
+            end
+          end, { "i", "s" }),
           -- scroll documentation window
           ["<C-f>"] = cmp.mapping.scroll_docs(-5),
           ["<C-u>"] = cmp.mapping.scroll_docs(5),
         }),
+        -- snippet support
+        snippet = {
+          expand = function(args)
+            luasnip.lsp_expand(args.body)
+          end,
+        },
       })
     end,
   },
