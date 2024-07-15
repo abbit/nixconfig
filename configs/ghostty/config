@@ -1,4 +1,4 @@
-theme = catppuccin-mocha
+#theme = catppuccin-mocha
 
 font-size = 13
 font-family = "JetBrainsMonoNL Nerd Font"
@@ -11,3 +11,31 @@ macos-option-as-alt = true
 mouse-hide-while-typing = true
 quit-after-last-window-closed = true
 command = "/etc/profiles/per-user/abbit/bin/fish"
+
+# melange colorscheme
+
+background = #292522
+foreground = #ECE1D7
+
+selection-background = #403A36
+selection-foreground = #ECE1D7
+
+# normal
+palette = 0=#34302C
+palette = 1=#BD8183
+palette = 2=#78997A
+palette = 3=#E49B5D
+palette = 4=#7F91B2
+palette = 5=#B380B0
+palette = 6=#7B9695
+palette = 7=#C1A78E
+
+# bright
+palette = 8=#867462
+palette = 9=#D47766
+palette = 10=#85B695
+palette = 11=#EBC06D
+palette = 12=#A3A9CE
+palette = 13=#CF9BC2
+palette = 14=#89B3B6
+palette = 15=#ECE1D7
