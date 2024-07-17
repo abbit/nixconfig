@@ -44,6 +44,7 @@ in {
     global.autoUpdate = false;
     casks = [
       "arc"
+      "appcleaner"
       "bitwarden"
       "blackhole-16ch"
       "iina"
@@ -51,7 +52,7 @@ in {
       "raycast"
       "rectangle"
       "rescuetime"
-      #"sioyek"
+      "sfm" # sing-box
       "skim"
       "spotify"
       "stats"
@@ -75,10 +76,11 @@ in {
       };
       dock.mru-spaces = false; # Do not automatically rearrange Spaces
     };
+    keyboard = {
+      enableKeyMapping = true;
+      remapCapsLockToControl = true;
+    };
   };
-
-  system.keyboard.enableKeyMapping = true;
-  system.keyboard.remapCapsLockToControl = true;
 
   # Add ability to used TouchID for sudo authentication
   security.pam.enableSudoTouchIdAuth = true;
