@@ -18,7 +18,7 @@ return {
       diagnostics_indicator = function(count, _, _, _)
         return "(" .. count .. ")"
       end,
-      highlights = require("catppuccin.groups.integrations.bufferline").get(),
+      -- highlights = require("catppuccin.groups.integrations.bufferline").get(),
       close_command = function(n)
         require("mini.bufremove").delete(n, false)
       end,
