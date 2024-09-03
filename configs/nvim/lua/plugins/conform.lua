@@ -7,7 +7,7 @@ return {
       yaml = { "yamlfmt" },
       nix = { "alejandra" },
       lua = { "stylua" },
-      javascript = { { "prettierd", "prettier" } },
+      javascript = { "prettierd", "prettier", stop_after_first = true },
       go = { "goimports", "gofumpt" },
       python = function(bufnr)
         if require("conform").get_formatter_info("ruff_format", bufnr).available then
