@@ -108,6 +108,26 @@
 
 ;; (require 'org-inlinetask)
 
+(after! org
+  (setq org-todo-keywords
+      '((sequence "TODO(t)" "PROGRESS(p)" "PAUSE(s)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)")))
+  (setq org-todo-keyword-faces
+      '(("PROGRESS" . (:foreground "orange1" :weight bold))
+        ("PAUSE" . (:foreground "DarkSlateBlue"))
+        ("WAITING" . (:foreground "blue"))
+        ("CANCELED" . (:foreground "red"))))
+  (setq org-agenda-span 'week)
+  (setq org-agenda-start-day ".")
+)
+
+(after! cider
+  (set-popup-rules!
+   '(("^\\*cider-repl"
+      :side right
+      :width 90
+      :quit nil
+      :ttl nil))))
+
 (use-package! org-super-agenda
   :after org-agenda
   :custom (org-super-agenda-groups
@@ -124,20 +144,3 @@
              (:name "Todo" :order 5)
              (:name "On Pause" :todo ("PAUSE") :order 9)))
   :config (setq org-super-agenda-header-map nil) (org-super-agenda-mode t))
-
-(after! org
-  (setq org-todo-keywords
-      '((sequence "TODO(t)" "PROGRESS(p)" "PAUSE(s)" "WAITING(w)" "|" "DONE(d)" "CANCELED(c)")))
-  (setq org-todo-keyword-faces
-      '(("PROGRESS" . (:foreground "orange1" :weight bold))
-        ("PAUSE" . (:foreground "DarkSlateBlue"))
-        ("WAITING" . (:foreground "blue"))
-        ("CANCELED" . (:foreground "red")))))
-
-(after! cider
-  (set-popup-rules!
-   '(("^\\*cider-repl"
-      :side right
-      :width 90
-      :quit nil
-      :ttl nil))))
