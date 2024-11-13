@@ -47,7 +47,7 @@
 
     commonModules = [
       {nixpkgs = {inherit overlays;};} # enable overlays
-      ./common-configuration.nix
+      ./hosts/common.nix
       hmConfig
     ];
   in {
@@ -62,7 +62,7 @@
         modules =
           commonModules
           ++ [
-            ./darwin-configuration.nix
+            ./hosts/macos.nix
             home-manager.darwinModules.home-manager
           ];
         inherit specialArgs;
@@ -75,7 +75,7 @@
         modules =
           commonModules
           ++ [
-            ./orbstack-configuration.nix
+            ./hosts/orbstack.nix
             home-manager.nixosModules.home-manager
           ];
         inherit specialArgs;
