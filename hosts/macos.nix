@@ -1,11 +1,10 @@
 {
   config,
   pkgs,
-  username,
+  user,
+  homedir,
   ...
-}: let
-  homedir = "/Users/${username}";
-in {
+}: {
   environment.systemPackages = with pkgs; [
     rclone
   ];
@@ -97,7 +96,7 @@ in {
       echo "[$(date "+%Y-%m-%d %H:%M:%S")] All things synced!"
     '';
     serviceConfig = {
-      UserName = username;
+      UserName = user;
       StartCalendarInterval = [{Minute = 0;}];
       StandardOutPath = "/tmp/gdrive-sync-logs.txt";
       StandardErrorPath = "/tmp/gdrive-sync-logs.txt";

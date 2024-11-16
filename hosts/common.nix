@@ -1,18 +1,11 @@
 {
   lib,
   pkgs,
-  username,
+  user,
+  homedir,
+  isDarwin,
   ...
-}: let
-  isDarwin = pkgs.stdenv.isDarwin;
-  homedir =
-    (
-      if isDarwin
-      then "/Users/"
-      else "/home/"
-    )
-    + username;
-in {
+}: {
   environment.systemPackages = with pkgs;
     [
       # tools
@@ -23,25 +16,23 @@ in {
       ripgrep
       jq
       unstable.neovim
-      unstable.nushell
       unstable.just
+    ]
+    ++ [
       # programming languages
       unstable.go_1_22
       unstable.nodejs_20
-      (rust-bin.stable.latest.default.override {
-        extensions = ["rust-src"];
-      })
-      (python3.withPackages (
-        p:
-          with p; [
-            ipython
-            requests
-          ]
-      ))
+      (rust-bin.stable.latest.default.override {extensions = ["rust-src"];})
+      (python3.withPackages (p: with p; [ipython requests]))
       # LSPs, linters, formatters, etc.
       alejandra
     ]
+    ++ lib.optionals isDarwin [
+      # darwin specific
+      libiconv
+    ]
     ++ lib.optionals (!isDarwin) [
+      # linux specific
       gcc
     ];
 
@@ -53,7 +44,7 @@ in {
 
   programs.fish.enable = true;
 
-  users.users.${username} = {
+  users.users.${user} = {
     home = homedir;
     shell = pkgs.fish;
   };

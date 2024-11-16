@@ -1,20 +1,12 @@
 {
   lib,
   pkgs,
-  username,
   config,
+  user,
+  homedir,
+  isDarwin,
   ...
 }: let
-  isDarwin = pkgs.stdenv.isDarwin;
-
-  homedir =
-    (
-      if isDarwin
-      then "/Users/"
-      else "/home/"
-    )
-    + username;
-
   shellAliases = {
     ls = "eza";
     ll = "eza -lah --group-directories-first";
@@ -33,7 +25,7 @@ in
     # changes in each release.
     home.stateVersion = "23.11";
 
-    home.username = username;
+    home.username = user;
     home.homeDirectory = homedir;
 
     home.packages = with pkgs;
@@ -41,7 +33,6 @@ in
         fastfetch
         scc
         tlrc
-        libiconv
         # for emacs
         fontconfig
         coreutils-prefixed
