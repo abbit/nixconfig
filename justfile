@@ -19,6 +19,7 @@ update-brew:
 # update neovim plugins
 update-nvim:
     nvim --headless "+Lazy! sync" +qa
+    nvim --headless "+TSUpdate" +qa
 
 # update doom emacs
 update-emacs:
