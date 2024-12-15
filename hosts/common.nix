@@ -49,7 +49,7 @@
     shell = pkgs.fish;
   };
 
-  time.timeZone = "Europe/Moscow";
+  time.timeZone = "Asia/Novosibirsk";
 
   nix.extraOptions = ''
     experimental-features = nix-command flakes
