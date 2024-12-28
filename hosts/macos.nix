@@ -56,6 +56,7 @@
       "spotify"
       "stats"
       "transmission"
+      "ghostty"
     ];
   };
 
