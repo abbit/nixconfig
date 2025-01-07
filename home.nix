@@ -47,6 +47,7 @@ in
       "$HOME/.cargo/bin"
       "$HOME/go/bin"
       "$HOME/.emacs.d/bin"
+      "$HOME/bin"
     ];
 
     home.sessionVariables = {
