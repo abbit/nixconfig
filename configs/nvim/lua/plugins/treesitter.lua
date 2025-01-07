@@ -1,6 +1,7 @@
 -- easily configure treesitter
 return {
   "nvim-treesitter/nvim-treesitter",
+  -- enabled = false,
   dependencies = {
     {
       "nvim-treesitter/nvim-treesitter-context", -- Show code context
@@ -36,6 +37,9 @@ return {
         "c",
         "cpp",
         "rust",
+      },
+      ignore_install = {
+        "zig", -- nvim freezes on saving .zig file because of this
       },
       -- Install parsers synchronously (only applied to `ensure_installed`)
       sync_install = false,
