@@ -17,13 +17,13 @@ return {
         end
       end,
     },
-    format_on_save = {
-      lsp_fallback = true,
-      timeout_ms = 1000,
-    },
-    format_after_save = {
-      lsp_fallback = true,
-    },
+    format_on_save = function(bufnr)
+      -- Disable with a global or buffer-local variable
+      if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+        return
+      end
+      return { timeout_ms = 3000, lsp_format = "fallback" }
+    end,
     log_level = vim.log.levels.ERROR,
     notify_on_error = true,
   },
