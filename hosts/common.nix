@@ -20,7 +20,7 @@
     ]
     ++ [
       # programming languages
-      unstable.go_1_22
+      unstable.go_1_24
       unstable.nodejs_20
       (rust-bin.stable.latest.default.override {extensions = ["rust-src"];})
       (python3.withPackages (p: with p; [ipython requests]))
