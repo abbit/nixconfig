@@ -57,6 +57,7 @@
       "stats"
       "transmission"
       "ghostty"
+      "logseq"
     ];
   };
 
