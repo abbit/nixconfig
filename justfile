@@ -21,12 +21,7 @@ update-nvim:
     nvim --headless "+Lazy! sync" +qa
     nvim --headless "+TSUpdate" +qa
 
-# update doom emacs
-update-emacs:
-    doom upgrade
-    doom sync
-
-update-all: update-flake update-brew update-nvim update-emacs
+update-all: update-flake update-brew update-nvim
 
 # remove all generations older than 7 days
 clean:

@@ -33,7 +33,6 @@ in
         fastfetch
         scc
         tlrc
-        # for emacs
         fontconfig
         coreutils-prefixed
         gnutls
@@ -46,7 +45,6 @@ in
     home.sessionPath = [
       "$HOME/.cargo/bin"
       "$HOME/go/bin"
-      "$HOME/.emacs.d/bin"
       "$HOME/bin"
     ];
 
@@ -67,11 +65,6 @@ in
     programs.htop.enable = true;
     programs.lazygit.enable = true;
     programs.eza.enable = true;
-
-    programs.emacs = {
-      enable = true;
-      extraPackages = epkgs: with epkgs; [vterm];
-    };
 
     programs.bat = {
       enable = true;
@@ -285,7 +278,6 @@ in
     xdg.configFile =
       {
         nvim.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nix/configs/nvim";
-        doom.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nix/configs/doom";
       }
       // optionalAttrs isDarwin {
         ghostty.source = config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/nix/configs/ghostty";
