@@ -15,6 +15,7 @@
       fd
       ripgrep
       jq
+      graphviz # go tool pprof dependency
       unstable.neovim
       unstable.just
     ]
