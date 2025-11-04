@@ -93,7 +93,7 @@
       echo "[$(date "+%Y-%m-%d %H:%M:%S")] Running sync job..."
       ${pkgs.rclone}/bin/rclone sync --exclude ".DS_Store" ${homedir}/Documents/Books gdrive:/Books
       ${pkgs.rclone}/bin/rclone sync --exclude ".DS_Store" ${homedir}/Documents/Docs gdrive:/Docs
-      ${pkgs.rclone}/bin/rclone sync --exclude ".DS_Store" ${homedir}/Documents/Misc gdrive:/Misc
+      ${pkgs.rclone}/bin/rclone sync --exclude ".DS_Store" ${homedir}/Documents/Notes gdrive:/Notes
       ${pkgs.rclone}/bin/rclone sync --exclude ".DS_Store" ${homedir}/Pictures/pics gdrive:/pics
       echo "[$(date "+%Y-%m-%d %H:%M:%S")] All things synced!"
     '';
