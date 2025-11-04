@@ -58,7 +58,6 @@
       "transmission"
       "ghostty"
       "logseq"
-      "ollama"
     ];
   };
 
