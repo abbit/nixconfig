@@ -42,22 +42,27 @@
     enable = true;
     global.autoUpdate = false;
     casks = [
-      "arc"
       "appcleaner"
+      "arc"
+      "betterdisplay"
       "bitwarden"
       "blackhole-16ch"
+      "calibre"
+      "coteditor"
+      "ghostty"
       "iina"
+      "logseq"
       "orbstack"
       "raycast"
       "rectangle"
       "rescuetime"
-      "sfm" # sing-box
+      "sfm"
       "skim"
       "spotify"
       "stats"
+      "telegram-desktop"
       "transmission"
-      "ghostty"
-      "logseq"
+      "visual-studio-code"
     ];
   };
 
