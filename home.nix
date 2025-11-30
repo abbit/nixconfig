@@ -40,6 +40,7 @@ in
       ++ optionals isDarwin [
         ffmpeg
         mangal-fork
+        yt-dlp
       ];
 
     home.sessionPath = [
