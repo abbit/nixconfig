@@ -230,38 +230,6 @@ return {
     })
 
     push_right({
-      -- Copilot status
-      function()
-        local icon = " "
-        local status = require("copilot.api").status.data
-        return icon .. (status.message or "")
-      end,
-      cond = function()
-        if not package.loaded["copilot"] then
-          return
-        end
-        local ok, clients = pcall(lsp_get_clients, { name = "copilot", bufnr = 0 })
-        if not ok then
-          return false
-        end
-        return ok and #clients > 0
-      end,
-      color = function()
-        if not package.loaded["copilot"] then
-          return
-        end
-        local status = require("copilot.api").status.data
-        local copilot_status_colors = {
-          [""] = colors.green,
-          ["Normal"] = colors.green,
-          ["Warning"] = colors.red,
-          ["InProgress"] = colors.blue,
-        }
-        return { fg = copilot_status_colors[status.status] or copilot_status_colors[""] }
-      end,
-    })
-
-    push_right({
       function()
         return "▊"
       end,

@@ -8,7 +8,6 @@ return {
       { "FelipeLema/cmp-async-path" }, -- source for filesystem paths
       { "hrsh7th/cmp-nvim-lua" }, -- source for nvim lua api
       { "saadparwaiz1/cmp_luasnip" }, -- cmp source for luasnip
-      { "zbirenbaum/copilot-cmp" }, -- cmp source for copilot
     },
     config = function()
       local cmp = require("cmp")
@@ -50,7 +49,6 @@ return {
         -- completion sources in priority order
         sources = cmp.config.sources({
           { name = "async_path" },
-          { name = "copilot" },
           { name = "nvim_lua" },
           { name = "nvim_lsp" },
           { name = "luasnip", keyword_length = 2 },
