@@ -43,12 +43,12 @@
     global.autoUpdate = false;
     casks = [
       "appcleaner"
-      "arc"
       "betterdisplay"
       "bitwarden"
       "blackhole-16ch"
       "calibre"
       "coteditor"
+      "firefox"
       "ghostty"
       "iina"
       "logseq"
