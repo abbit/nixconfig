@@ -2,17 +2,17 @@
   description = "Abbit's Nix configuration flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-25.11-darwin";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/3";
 
     nix-darwin = {
-      url = "github:LnL7/nix-darwin/nix-darwin-24.11";
+      url = "github:LnL7/nix-darwin/nix-darwin-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-24.11";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -54,7 +54,7 @@
         if isDarwin
         then nix-darwin.lib.darwinSystem
         else nixpkgs.lib.nixosSystem;
-      
+
       systemModules =
         if isDarwin
         then [
@@ -79,25 +79,27 @@
       systemFunc {
         inherit system;
 
-        modules = 
+        modules =
           [
-          # Enable overlays
-          {nixpkgs.overlays = overlays;}
-          # Allow unfree packages.
-          {nixpkgs.config.allowUnfree = true;}
-          # Expose some extra arguments so modules can parameterize better based on these values.
-          {config._module.args = extraArgs;}
-          ] ++ systemModules ++ [
-          commonHostConfig
-          hostConfig
-          osHmModules.home-manager
-          hmConfig
-        ];
+            # Enable overlays
+            {nixpkgs.overlays = overlays;}
+            # Allow unfree packages.
+            {nixpkgs.config.allowUnfree = true;}
+            # Expose some extra arguments so modules can parameterize better based on these values.
+            {config._module.args = extraArgs;}
+          ]
+          ++ systemModules
+          ++ [
+            commonHostConfig
+            hostConfig
+            osHmModules.home-manager
+            hmConfig
+          ];
       };
   in {
     overlays = {
       my-pkgs = final: _: (import ./pkgs {pkgs = final;});
-      pkgs-unstable = final: _: {unstable = self.inputs.nixpkgs-unstable.legacyPackages.${final.system};};
+      pkgs-unstable = final: _: {unstable = self.inputs.nixpkgs-unstable.legacyPackages.${final.stdenv.hostPlatform.system};};
     };
 
     darwinConfigurations."macos" = mkHost "macos" {

@@ -22,7 +22,7 @@
       source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish'
     end
     # End Nix
-    
+
     # Needed to address bug where $PATH is not properly set for fish:
     # https://github.com/LnL7/nix-darwin/issues/122
     for p in (string split : ${config.environment.systemPath})
@@ -60,7 +60,9 @@
     ];
   };
 
-  fonts.packages = [(pkgs.nerdfonts.override {fonts = ["JetBrainsMono"];})];
+  fonts.packages = [
+    pkgs.nerd-fonts.jetbrains-mono
+  ];
 
   system = {
     defaults = {
@@ -83,7 +85,7 @@
   };
 
   # Add ability to used TouchID for sudo authentication
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 
   # cron-like job to sync some local folders to Google Drive
   # runs every hour on minute 0
@@ -103,6 +105,8 @@
       StandardErrorPath = "/tmp/gdrive-sync-logs.txt";
     };
   };
+
+  system.primaryUser = user;
 
   determinateNix = {
     enable = true;

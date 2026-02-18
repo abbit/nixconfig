@@ -85,11 +85,17 @@ in
     programs.git = {
       enable = true;
       lfs.enable = true;
-      userName = "Mikhail Kopylov";
-      userEmail = "kopylovmichaelfl@gmail.com";
-      aliases = {
-        co = "commit";
-        st = "status";
+      settings = {
+        user.name = "Mikhail Kopylov";
+        user.email = "kopylovmichaelfl@gmail.com";
+        color.ui = true;
+        diff.colorMoved = true;
+        github.user = "abbit";
+        init.defaultBranch = "main";
+        alias = {
+          co = "commit";
+          st = "status";
+        };
       };
       ignores = [
         ".DS_Store"
@@ -98,14 +104,12 @@ in
         ".direnv"
         ".envrc"
       ];
-      extraConfig = {
-        color.ui = true;
-        diff.colorMoved = true;
-        github.user = "abbit";
-        init.defaultBranch = "main";
-      };
-      delta.enable = true;
-      delta.options = {
+    };
+
+    programs.delta = {
+      enable = true;
+      enableGitIntegration = true;
+      options = {
         navigate = true;
         syntax-theme = "Catppuccin-mocha";
       };
@@ -129,7 +133,7 @@ in
 
       interactiveShellInit = ''
         ${builtins.readFile ./configs/fish/config.fish}
-        
+
         set -g SHELL ${pkgs.fish}/bin/fish
       '';
 
@@ -227,7 +231,7 @@ in
       enable = true;
       shellAliases = shellAliases;
 
-      initExtra = ''
+      initContent = ''
         # Ghostty shell integration
         if [[ -n $GHOSTTY_RESOURCES_DIR ]]; then
             autoload -Uz -- "$GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration
