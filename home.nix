@@ -30,12 +30,31 @@ in
 
     home.packages = with pkgs;
       [
+        # tools
         fastfetch
         scc
-        tlrc
+        tlrc # tldr
         fontconfig
         coreutils-prefixed
         gnutls
+        gnumake
+        curl
+        wget
+        fd
+        ripgrep
+        jq
+        just
+        graphviz # go tool pprof dependency
+
+        # programming languages
+        gcc
+        unstable.go_1_24
+        unstable.nodejs_20
+        (rust-bin.stable.latest.default.override {extensions = ["rust-src"];})
+        (python3.withPackages (p: with p; [ipython requests]))
+
+        # LSPs, linters, formatters, etc.
+        alejandra
       ]
       ++ optionals isDarwin [
         ffmpeg
