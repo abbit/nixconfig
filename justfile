@@ -36,3 +36,6 @@ rebuild name:
 [macos]
 rebuild:
     darwin-rebuild switch --flake .#macos
+
+rebuild-home name:
+    home-manager switch --flake .#{{name}}

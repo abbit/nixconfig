@@ -48,7 +48,7 @@
         )
         + user;
 
-      extraArgs = {inherit inputs isDarwin user homedir;};
+      extraSpecialArgs = {inherit inputs isDarwin user homedir;};
 
       systemFunc =
         if isDarwin
@@ -72,7 +72,7 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.users.${user} = import ./home.nix;
-          home-manager.extraSpecialArgs = extraArgs;
+          home-manager.extraSpecialArgs = extraSpecialArgs;
         }
       ];
     in
@@ -86,10 +86,38 @@
             # Allow unfree packages.
             {nixpkgs.config.allowUnfree = true;}
             # Expose some extra arguments so modules can parameterize better based on these values.
-            {config._module.args = extraArgs;}
+            {config._module.args = extraSpecialArgs;}
           ]
           ++ systemModules
           ++ hostModules;
+      };
+
+    mkHome = {
+      system,
+      user,
+      isDarwin ? false,
+    }: let
+      homedir =
+        (
+          if isDarwin
+          then "/Users/"
+          else "/home/"
+        )
+        + user;
+
+      extraSpecialArgs = {inherit inputs isDarwin user homedir;};
+    in
+      home-manager.lib.homeManagerConfiguration {
+        inherit extraSpecialArgs;
+
+        pkgs = import nixpkgs {
+            inherit system overlays;
+            config.allowUnfree = true;
+        };
+
+        modules = [
+            ./home.nix
+        ];
       };
   in {
     overlays = {
@@ -106,6 +134,11 @@
     nixosConfigurations."orbstack" = mkHost "orbstack" {
       system = "aarch64-linux";
       user = "abbit";
+    };
+
+    homeConfigurations."deck" = mkHome {
+      system = "x86_64-linux";
+      user = "deck";
     };
   };
 }
