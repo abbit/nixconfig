@@ -126,16 +126,15 @@ in
 
     programs.fish = {
       enable = true;
-      shellInit = ''
-        set -U fish_greeting # disable fish greeting
-        set -U fish_key_bindings fish_vi_key_bindings # use vi-mode
+
+      interactiveShellInit = ''
+        ${builtins.readFile ./configs/fish/config.fish}
+        
+        set -g SHELL ${pkgs.fish}/bin/fish
       '';
-      interactiveShellInit = optionalString isDarwin ''
-        if set -q GHOSTTY_RESOURCES_DIR
-          source "$GHOSTTY_RESOURCES_DIR/shell-integration/fish/vendor_conf.d/ghostty-shell-integration.fish"
-        end
-      '';
+
       shellAliases = shellAliases;
+
       plugins = [
         {
           name = "fzf.fish";
@@ -166,8 +165,6 @@ in
       withRuby = true;
       withNodeJs = true;
       withPython3 = true;
-
-      # TODO: migrate from mason?
     };
 
     programs.direnv = {
@@ -206,6 +203,12 @@ in
       mouse = true;
       shortcut = "a";
       terminal = "xterm-256color";
+      extraConfig = ''
+        set -g default-command ${pkgs.fish}/bin/fish
+        set -g default-shell ${pkgs.fish}/bin/fish
+
+        ${builtins.readFile ./configs/tmux/tmux-light.conf}
+      '';
       plugins = with pkgs.tmuxPlugins; [
         vim-tmux-navigator
         {
@@ -217,32 +220,6 @@ in
           '';
         }
       ];
-      extraConfig = ''
-        # ============================
-        #   Settings
-        # ============================
-        set-option -g focus-events on
-
-        set -g default-command ${pkgs.fish}/bin/fish
-        set -g default-shell ${pkgs.fish}/bin/fish
-
-        # renumber windows when a window is closed
-        set-option -g renumber-windows on
-
-        # ============================
-        #   Binds
-        # ============================
-
-        # Open new panes and windows in current path
-        unbind '"'
-        bind v split-window -v -c "#{pane_current_path}"
-        unbind %
-        bind h split-window -h -c "#{pane_current_path}"
-        bind c new-window -c "#{pane_current_path}"
-        # maximizing and minimizing tmux pane
-        unbind z
-        bind -r m resize-pane -Z
-      '';
     };
 
     # hack for macos
@@ -257,21 +234,6 @@ in
             ghostty-integration
             unfunction ghostty-integration
         fi
-
-        # >>> conda initialize >>>
-        # !! Contents within this block are managed by 'conda init' !!
-        __conda_setup="$('/opt/homebrew/Caskroom/miniforge/base/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-        if [ $? -eq 0 ]; then
-            eval "$__conda_setup"
-        else
-            if [ -f "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh" ]; then
-                . "/opt/homebrew/Caskroom/miniforge/base/etc/profile.d/conda.sh"
-            else
-                export PATH="/opt/homebrew/Caskroom/miniforge/base/bin:$PATH"
-            fi
-        fi
-        unset __conda_setup
-        # <<< conda initialize <<<
       '';
     };
 

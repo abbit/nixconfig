@@ -10,7 +10,7 @@ window-save-state = never
 macos-option-as-alt = true
 mouse-hide-while-typing = true
 quit-after-last-window-closed = true
-command = "/etc/profiles/per-user/abbit/bin/fish"
+command = "zsh -l -c fish"
 
 # melange colorscheme
 

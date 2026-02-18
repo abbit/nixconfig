@@ -9,32 +9,26 @@
     rclone
   ];
 
-  programs.zsh.enable = true;
-
-  # Needed to address bug where $PATH is not properly set for fish:
-  # https://github.com/LnL7/nix-darwin/issues/122
-  programs.fish.shellInit = ''
-    for p in (string split : ${config.environment.systemPath})
-      if not contains $p $fish_user_paths
-        set -g fish_user_paths $fish_user_paths $p
-      end
-    end
-  '';
-
   environment.extraInit = ''
     eval "$(${config.homebrew.brewPrefix}/brew shellenv)"
   '';
 
-  # https://docs.brew.sh/Shell-Completion#configuring-completions-in-fish
-  # For some reason if the Fish completions are added at the end of `fish_complete_path` they don't
-  # seem to work, but they do work if added at the start.
-  programs.fish.interactiveShellInit = ''
-    if test -d (brew --prefix)"/share/fish/completions"
-      set -p fish_complete_path (brew --prefix)/share/fish/completions
-    end
+  programs.zsh.enable = true;
 
-    if test -d (brew --prefix)"/share/fish/vendor_completions.d"
-      set -p fish_complete_path (brew --prefix)/share/fish/vendor_completions.d
+  programs.fish.enable = true;
+  programs.fish.shellInit = ''
+    # Nix
+    if test -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish'
+      source '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.fish'
+    end
+    # End Nix
+    
+    # Needed to address bug where $PATH is not properly set for fish:
+    # https://github.com/LnL7/nix-darwin/issues/122
+    for p in (string split : ${config.environment.systemPath})
+      if not contains $p $fish_user_paths
+        set -g fish_user_paths $fish_user_paths $p
+      end
     end
   '';
 
@@ -110,10 +104,9 @@
     };
   };
 
-  # We install Nix using a separate installer by Determinate Systems
-  # so we don't want nix-darwin to manage it for us.
-  # This tells nix-darwin to just use whatever is running.
-  nix.useDaemon = true;
+  determinateNix = {
+    enable = true;
+  };
 
   # The platform the configuration will be used on.
   nixpkgs.hostPlatform = "aarch64-darwin";
