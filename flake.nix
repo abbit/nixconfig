@@ -59,22 +59,22 @@
         if isDarwin
         then [
           inputs.determinate.darwinModules.default
+          home-manager.darwinModules.home-manager
         ]
-        else [];
+        else [
+          home-manager.nixosModules.home-manager
+        ];
 
-      osHmModules =
-        if isDarwin
-        then home-manager.darwinModules
-        else home-manager.nixosModules;
-
-      commonHostConfig = ./hosts/common.nix;
-      hostConfig = ./hosts/${name}.nix;
-      hmConfig = {
-        home-manager.useGlobalPkgs = true;
-        home-manager.useUserPackages = true;
-        home-manager.users.${user} = import ./home.nix;
-        home-manager.extraSpecialArgs = extraArgs;
-      };
+      hostModules = [
+        ./hosts/common.nix
+        ./hosts/${name}.nix
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users.${user} = import ./home.nix;
+          home-manager.extraSpecialArgs = extraArgs;
+        }
+      ];
     in
       systemFunc {
         inherit system;
@@ -89,12 +89,7 @@
             {config._module.args = extraArgs;}
           ]
           ++ systemModules
-          ++ [
-            commonHostConfig
-            hostConfig
-            osHmModules.home-manager
-            hmConfig
-          ];
+          ++ hostModules;
       };
   in {
     overlays = {
